@@ -1,0 +1,403 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ───────── KAIRO TYPOGRAPHY SYSTEM ─────────
+   2 únicas familias permitidas en la landing pública:
+   1. Metrik V100  → body / UI / botones / cards / forms / metrics
+   2. LightlabDisplay (italic display)  → H1 hero, H2 secciones clave, CTA final
+
+   Archivos esperados en /public/fonts/ (NO incluidos en el repo; ver
+   /public/fonts/README.md para nombres exactos). Si los archivos faltan,
+   el sistema cae a fallbacks seguros (Arial / Georgia) sin romper layout.
+   ─────────────────────────────────────────── */
+
+@font-face {
+  font-family: "Metrik";
+  src: url("/fonts/Metrik-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Metrik";
+  src: url("/fonts/Metrik-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Metrik";
+  src: url("/fonts/Metrik-Semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Metrik";
+  src: url("/fonts/Metrik-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "LightlabDisplay";
+  src: url("/fonts/LightlabDisplay-Regular.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "LightlabDisplay";
+  src: url("/fonts/LightlabDisplay-Italic.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  /* Light Mode - KAIRO Brand Colors - Enhanced Contrast */
+  --background: #F7F9F8;
+  --foreground: #0A0F0C;
+  --card: rgba(0,0,0,0.04);
+  --card-foreground: #0A0F0C;
+  --popover: rgba(0,0,0,0.04);
+  --popover-foreground: #0A0F0C;
+  --primary: #009959;
+  --primary-foreground: #FFFFFF;
+  --secondary: #00B86B;
+  --secondary-foreground: #050807;
+  --muted: rgba(0,0,0,0.06);
+  --muted-foreground: #4A5950;
+  --accent: rgba(0,153,89,0.14);
+  --accent-foreground: #009959;
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: #FFFFFF;
+  --border: rgba(0,0,0,0.12);
+  --input: rgba(0,0,0,0.12);
+  --ring: #009959;
+  --chart-1: #00B86B;
+  --chart-2: #39FF88;
+  --chart-3: #5A6B61;
+  --chart-4: #0A0F0C;
+  --chart-5: rgba(0,184,107,0.5);
+  --radius: 0.75rem;
+  
+  /* Glass Effect Variables - Light */
+  --glass-bg: rgba(255,255,255,0.75);
+  --glass-border: rgba(0,0,0,0.12);
+  --glass-glow: rgba(0,153,89,0.18);
+}
+
+.dark {
+  /* Dark Mode - KAIRO Brand Colors */
+  --background: #050807;
+  --foreground: #F4F7F5;
+  --card: rgba(255,255,255,0.04);
+  --card-foreground: #F4F7F5;
+  --popover: rgba(255,255,255,0.04);
+  --popover-foreground: #F4F7F5;
+  --primary: #39FF88;
+  --primary-foreground: #050807;
+  --secondary: #00B86B;
+  --secondary-foreground: #F4F7F5;
+  --muted: rgba(255,255,255,0.06);
+  --muted-foreground: #8F9893;
+  --accent: rgba(57,255,136,0.18);
+  --accent-foreground: #39FF88;
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: #F4F7F5;
+  --border: rgba(255,255,255,0.10);
+  --input: rgba(255,255,255,0.10);
+  --ring: #39FF88;
+  --chart-1: #39FF88;
+  --chart-2: #00B86B;
+  --chart-3: #8F9893;
+  --chart-4: #F4F7F5;
+  --chart-5: rgba(57,255,136,0.5);
+  
+  /* Glass Effect Variables - Dark */
+  --glass-bg: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.10);
+  --glass-glow: rgba(57,255,136,0.18);
+}
+
+@theme inline {
+  --font-body: "Metrik", Arial, Helvetica, system-ui, sans-serif;
+  --font-display: "LightlabDisplay", "Times New Roman", Georgia, serif;
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-body);
+  --font-heading: var(--font-display);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  /* Títulos display por defecto en H1/H2 grandes */
+  h1, h2 {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+  }
+  h3, h4, h5, h6 {
+    font-family: var(--font-body);
+    letter-spacing: -0.01em;
+  }
+  button, input, textarea, select, label, nav, li {
+    font-family: var(--font-body);
+  }
+}
+
+/* Helpers explícitos para casos donde el componente decide qué familia usar. */
+.font-body {
+  font-family: var(--font-body);
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+}
+
+.font-heading {
+  font-family: var(--font-display);
+}
+
+/* Estilo "lightlab.": parte italic display + parte sans bold pegada con punto.
+   Aplicar como wrapper en frases donde el efecto del wordmark refuerza el brand. */
+.title-lightlab {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+.title-lightlab .lightlab-mark {
+  font-style: normal;
+  font-weight: 800;
+  font-family: var(--font-body);
+  letter-spacing: -0.04em;
+}
+
+/* Métricas: Metrik con tabular-nums para que cifras no salten. */
+.font-mono,
+.font-num {
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
+/* Glass Card Effect */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  transition: all 0.3s ease;
+}
+
+.glass-card-green {
+  background: rgba(57,255,136,0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(57,255,136,0.20);
+}
+
+.dark .glass-card-green {
+  background: rgba(57,255,136,0.05);
+  border: 1px solid rgba(57,255,136,0.20);
+}
+
+:root .glass-card-green {
+  background: rgba(0,153,89,0.10);
+  border: 1px solid rgba(0,153,89,0.30);
+}
+
+/* Green Glow Effects */
+.glow-green {
+  box-shadow: 0 0 40px rgba(57,255,136,0.15), 0 0 80px rgba(57,255,136,0.05);
+}
+
+.dark .glow-green {
+  box-shadow: 0 0 40px rgba(57,255,136,0.15), 0 0 80px rgba(57,255,136,0.05);
+}
+
+:root .glow-green {
+  box-shadow: 0 0 40px rgba(0,153,89,0.15), 0 0 80px rgba(0,153,89,0.06);
+}
+
+.glow-green-sm {
+  box-shadow: 0 0 20px rgba(57,255,136,0.10);
+}
+
+.glow-green-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 40px rgba(57,255,136,0.15), 0 0 80px rgba(57,255,136,0.05); }
+  50% { box-shadow: 0 0 60px rgba(57,255,136,0.25), 0 0 100px rgba(57,255,136,0.10); }
+}
+
+/* Text Gradient */
+.text-gradient-green {
+  background: linear-gradient(135deg, #39FF88 0%, #00B86B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hidden::-webkit-scrollbar,
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hidden,
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Radial gradient background */
+.bg-radial-green {
+  background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(57,255,136,0.08) 0%, transparent 70%);
+}
+
+.dark .bg-radial-green {
+  background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(57,255,136,0.08) 0%, transparent 70%);
+}
+
+:root .bg-radial-green {
+  background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(0,153,89,0.08) 0%, transparent 70%);
+}
+
+/* Animated gradient border */
+@keyframes border-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.animate-border-glow {
+  animation: border-glow 3s ease-in-out infinite;
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Blob animation */
+@keyframes blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(20px, -30px) scale(1.05); }
+  50% { transform: translate(-20px, 20px) scale(0.95); }
+  75% { transform: translate(30px, 10px) scale(1.02); }
+}
+
+.animate-blob {
+  animation: blob 20s ease-in-out infinite;
+}
+
+/* Count up animation base */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-count-up {
+  animation: countUp 0.6s ease-out forwards;
+}
+
+/* ───── Reviews marquee ───── */
+@keyframes marquee-x {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+.marquee-track {
+  width: max-content;
+  animation: marquee-x 48s linear infinite;
+  will-change: transform;
+}
+
+.marquee-track:hover,
+.marquee-track:focus-within {
+  animation-play-state: paused;
+}
+
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+          mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+}
+
+/* Respect user motion preference: stop marquee, enable manual scroll */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .marquee-track > * {
+    scroll-snap-align: start;
+  }
+  .animate-float,
+  .animate-blob,
+  .animate-border-glow,
+  .glow-green-pulse {
+    animation: none !important;
+  }
+}
