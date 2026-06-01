@@ -5,12 +5,15 @@ import type { Metadata } from "next"
 export const metadata: Metadata = {
   title: "Términos y Condiciones",
   description:
-    "Términos y Condiciones de uso de KAIRO — sistema de recuperación de ingresos para clínicas y negocios que venden por WhatsApp.",
+    "Términos y Condiciones de KAIRO TECHNOLOGIES S.A.C. — sistema de recuperación de ingresos para negocios que atienden por WhatsApp.",
   alternates: { canonical: "https://getkairo.lat/terminos-y-condiciones" },
   robots: { index: true, follow: true },
 }
 
-const LAST_UPDATED = "1 de junio de 2026"
+const LAST_UPDATED = "Junio 2026"
+const LEGAL_EMAIL = "getkairoaiacademy@gmail.com"
+const ENTITY = "KAIRO TECHNOLOGIES S.A.C."
+const JURISDICTION = "Lima, Perú"
 
 export default function TermsPage() {
   return (
@@ -30,19 +33,9 @@ export default function TermsPage() {
             Términos y Condiciones
           </h1>
           <p className="mt-3 text-xs text-muted-foreground">
-            Última actualización: {LAST_UPDATED}
+            Última actualización: {LAST_UPDATED} · {ENTITY} · {JURISDICTION}
           </p>
         </header>
-
-        <div className="mb-10 rounded-2xl border border-primary/30 bg-primary/5 p-4">
-          <p className="text-sm font-semibold text-primary">
-            Aviso importante
-          </p>
-          <p className="mt-1.5 text-sm leading-relaxed text-foreground/85">
-            KAIRO entrega análisis, estimaciones y recomendaciones comerciales. No garantiza
-            ingresos, ventas, citas, pagos ni resultados específicos.
-          </p>
-        </div>
 
         <nav aria-label="Índice" className="mb-10 rounded-2xl border border-border/60 bg-card/40 p-5">
           <p className="text-[10px] uppercase tracking-wide text-muted-foreground mb-3">Contenido</p>
@@ -73,11 +66,8 @@ export default function TermsPage() {
             <ArrowLeft className="h-3.5 w-3.5" />
             Volver al inicio
           </Link>
-          <Link
-            href="/politica-de-privacidad"
-            className="text-xs text-primary hover:opacity-80 transition-opacity"
-          >
-            Política de Privacidad →
+          <Link href="/politica-de-privacidad" className="text-xs text-primary hover:opacity-80">
+            Ver Política de Privacidad →
           </Link>
         </footer>
       </div>
@@ -85,13 +75,24 @@ export default function TermsPage() {
   )
 }
 
-function Section({ id, number, title, children }: { id: string; number: number; title: string; children: React.ReactNode }) {
+function Section({
+  id,
+  number,
+  title,
+  children,
+}: {
+  id: string
+  number: number
+  title: string
+  children: React.ReactNode
+}) {
   return (
     <section id={id} className="scroll-mt-24">
-      <h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight mb-3 text-foreground">
-        {number}. {title}
+      <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground mb-3">
+        <span className="text-primary mr-2">{number}.</span>
+        {title}
       </h2>
-      <div className="space-y-3">{children}</div>
+      <div className="space-y-3 text-foreground/80">{children}</div>
     </section>
   )
 }
@@ -99,150 +100,159 @@ function Section({ id, number, title, children }: { id: string; number: number; 
 const SECTIONS: { id: string; title: string; content: React.ReactNode }[] = [
   {
     id: "identificacion",
-    title: "Identificación de KAIRO",
+    title: "Identificación del titular",
+    content: (
+      <p>
+        El presente sitio web y el servicio KAIRO son operados por <strong>{ENTITY}</strong>, empresa constituida en
+        Perú con domicilio en {JURISDICTION}. Canal oficial de contacto legal: {LEGAL_EMAIL}.
+      </p>
+    ),
+  },
+  {
+    id: "aceptacion",
+    title: "Aceptación de los términos",
+    content: (
+      <p>
+        Al usar este sitio, completar un formulario, agendar una demo o contratar el servicio, declaras haber leído y
+        aceptado de forma libre, expresa e informada estos Términos y Condiciones, así como la Política de Privacidad.
+        Si no estás de acuerdo, debes abstenerte de usar el servicio.
+      </p>
+    ),
+  },
+  {
+    id: "objeto",
+    title: "Objeto del servicio",
+    content: (
+      <p>
+        KAIRO es un sistema SaaS que utiliza inteligencia artificial sobre datos del propio negocio para identificar
+        oportunidades comerciales: cotizaciones abiertas, clientes a reactivar, conversaciones perdidas y campañas
+        sugeridas. KAIRO entrega análisis, estimaciones y recomendaciones, no ejecuta ventas por sí mismo.
+      </p>
+    ),
+  },
+  {
+    id: "capacidad",
+    title: "Capacidad legal",
+    content: (
+      <p>
+        Para contratar KAIRO debes ser mayor de 18 años con capacidad para obligarte y, si contratas a nombre de una
+        persona jurídica, contar con poder suficiente para representarla.
+      </p>
+    ),
+  },
+  {
+    id: "registro",
+    title: "Registro y veracidad de datos",
+    content: (
+      <p>
+        Te comprometes a proporcionar información veraz, completa y actualizada en formularios, auditorías y
+        agendamientos. La entrega de datos falsos o de terceros sin autorización es responsabilidad exclusiva del
+        usuario.
+      </p>
+    ),
+  },
+  {
+    id: "auditoria-gratuita",
+    title: "Auditoría gratuita",
+    content: (
+      <p>
+        La auditoría comercial gratuita ofrecida en este sitio es de carácter informativo. Los números y oportunidades
+        mostrados son estimaciones basadas en patrones del sector y en los datos compartidos voluntariamente. No
+        constituyen una promesa de ingresos futuros.
+      </p>
+    ),
+  },
+  {
+    id: "prueba-gratuita",
+    title: "Prueba gratuita de 3 días",
+    content: (
+      <p>
+        KAIRO puede ofrecer una <strong>prueba gratuita de 3 (tres) días</strong> sobre el servicio activo. Durante ese
+        período tienes acceso a las funcionalidades habilitadas para la prueba. Al término de los 3 días, si no
+        cancelas y has contratado el servicio, se activa el cobro acordado conforme al plan elegido.
+      </p>
+    ),
+  },
+  {
+    id: "modelo-pago",
+    title: "Modelo de pago",
+    content: (
+      <p>
+        Salvo indicación expresa en una oferta puntual, KAIRO opera bajo un modelo de <strong>pago único (one-time)
+        </strong> por la implementación contratada. No se trata de una suscripción de cobro recurrente automático,
+        salvo que el usuario elija expresamente un plan recurrente y lo autorice.
+      </p>
+    ),
+  },
+  {
+    id: "no-reembolso",
+    title: "Política de no reembolso",
+    content: (
+      <p>
+        Una vez confirmado el pago e iniciada la implementación del servicio, los montos abonados no son
+        reembolsables, <em>salvo disposición legal aplicable</em> o defecto comprobado e imputable a KAIRO. La prueba
+        gratuita de 3 días existe precisamente para validar el servicio antes del pago.
+      </p>
+    ),
+  },
+  {
+    id: "facturacion",
+    title: "Facturación e impuestos",
+    content: (
+      <p>
+        Los precios anunciados pueden o no incluir tributos según el país del cliente. KAIRO emite el comprobante
+        correspondiente (factura o boleta) conforme a la normativa peruana. El cliente es responsable de cualquier
+        retención o tributo aplicable en su jurisdicción.
+      </p>
+    ),
+  },
+  {
+    id: "ia-limitaciones",
+    title: "Limitaciones de la inteligencia artificial",
     content: (
       <>
         <p>
-          KAIRO (en adelante, "KAIRO", "nosotros" o "el Servicio") es operado por{" "}
-          <strong>[RAZÓN SOCIAL — pendiente de confirmación]</strong>, con correo de contacto{" "}
-          <strong>[CORREO LEGAL]</strong> y jurisdicción <strong>[PAÍS / JURISDICCIÓN]</strong>.
+          KAIRO utiliza modelos de IA que pueden producir resultados imprecisos, incompletos o sesgados. Las
+          recomendaciones son orientativas y deben ser revisadas por una persona del equipo del negocio antes de
+          ejecutarse comercialmente.
+        </p>
+        <p>
+          KAIRO no garantiza ingresos específicos, conversiones, citas, ventas o cualquier resultado económico
+          puntual. Los resultados dependen del seguimiento, equipo y contexto comercial de cada negocio.
         </p>
       </>
     ),
   },
   {
-    id: "descripcion",
-    title: "Descripción del servicio",
-    content: (
-      <p>
-        KAIRO es una plataforma SaaS de recuperación de ingresos para clínicas y negocios que venden y
-        dan seguimiento por WhatsApp. Analiza contactos, conversaciones, cotizaciones pendientes y
-        clientes antiguos para detectar oportunidades comerciales, generar una Base Maestra,
-        clasificar leads (frío / tibio / caliente), recomendar campañas y sugerir mensajes
-        personalizados.
-      </p>
-    ),
-  },
-  {
-    id: "naturaleza-saas",
-    title: "Naturaleza SaaS",
-    content: (
-      <p>
-        KAIRO es un servicio en la nube prestado bajo modalidad SaaS. El acceso se realiza a través
-        de internet, no se entrega licencia de software descargable, y la infraestructura, soporte y
-        actualizaciones son responsabilidad de KAIRO.
-      </p>
-    ),
-  },
-  {
-    id: "publico-objetivo",
-    title: "Público objetivo",
-    content: (
-      <p>
-        El Servicio está dirigido a negocios formales — principalmente clínicas dentales, estéticas,
-        dermatológicas, de medicina estética, ortodoncia, depilación láser, así como otros negocios
-        que gestionan ventas y seguimiento por WhatsApp. No está dirigido a consumidores finales
-        ni a menores de edad.
-      </p>
-    ),
-  },
-  {
-    id: "uso-permitido",
-    title: "Uso permitido",
+    id: "whatsapp-responsabilidad",
+    title: "Uso de WhatsApp y mensajería",
     content: (
       <>
-        <p>El usuario puede utilizar KAIRO para:</p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Analizar y organizar contactos y conversaciones de su propio negocio.</li>
-          <li>Recibir recomendaciones de campañas y mensajes.</li>
-          <li>Coordinar el seguimiento comercial con su equipo.</li>
-          <li>Medir resultados comerciales recuperados.</li>
-        </ul>
+        <p>
+          El usuario es responsable de cumplir las políticas de WhatsApp Business, Meta y la normativa de protección
+          al consumidor al utilizar campañas, plantillas, automatizaciones o mensajes generados a partir de las
+          recomendaciones de KAIRO.
+        </p>
+        <p>
+          Está prohibido usar KAIRO para spam, mensajes no solicitados sin consentimiento, suplantación de identidad o
+          contenido ilegal. KAIRO podrá suspender el servicio ante usos abusivos.
+        </p>
       </>
     ),
   },
   {
-    id: "uso-prohibido",
-    title: "Uso prohibido",
+    id: "uso-aceptable",
+    title: "Uso aceptable",
     content: (
       <>
-        <p>Queda expresamente prohibido:</p>
+        <p>El usuario se compromete a no:</p>
         <ul className="list-disc pl-5 space-y-1">
-          <li>Usar KAIRO para enviar spam o comunicaciones no consentidas.</li>
-          <li>Cargar datos de personas sin contar con base legal o autorización.</li>
-          <li>Intentar acceder a cuentas, datos o sistemas que no pertenezcan al usuario.</li>
-          <li>Realizar ingeniería inversa o intentar vulnerar la seguridad del Servicio.</li>
-          <li>Revender, sublicenciar o redistribuir el Servicio sin autorización escrita.</li>
-          <li>Usar KAIRO para fines ilegales, fraudulentos o que afecten derechos de terceros.</li>
+          <li>Realizar ingeniería inversa, descompilar o intentar acceder al código fuente.</li>
+          <li>Revender, sublicenciar o ceder el acceso al servicio sin autorización escrita.</li>
+          <li>Sobrecargar la infraestructura mediante scraping, bots o ataques.</li>
+          <li>Usar el servicio para fines ilegales o contrarios a la moral y buenas costumbres.</li>
         </ul>
       </>
-    ),
-  },
-  {
-    id: "responsabilidad-cliente",
-    title: "Responsabilidad del cliente",
-    content: (
-      <p>
-        El cliente es responsable de la veracidad y legitimidad de los datos que carga en KAIRO,
-        de contar con el consentimiento o base legal necesarios para procesar datos de sus pacientes
-        o leads, y del uso que su equipo le dé a las recomendaciones generadas por la plataforma.
-      </p>
-    ),
-  },
-  {
-    id: "no-garantia",
-    title: "No garantía de ingresos",
-    content: (
-      <p className="font-medium text-foreground">
-        KAIRO entrega análisis, estimaciones y recomendaciones comerciales. No garantiza ingresos,
-        ventas, citas, pagos ni resultados específicos. Los resultados dependen del producto, el
-        mercado, el equipo comercial y la ejecución del cliente.
-      </p>
-    ),
-  },
-  {
-    id: "estimaciones",
-    title: "Estimaciones de recuperación",
-    content: (
-      <p>
-        Las cifras de "ingresos recuperables", "oportunidades detectadas" y similares son
-        estimaciones basadas en los datos cargados y en heurísticas del producto. No constituyen
-        promesa de pago, facturación ni cierre comercial.
-      </p>
-    ),
-  },
-  {
-    id: "ia",
-    title: "Limitaciones de la IA",
-    content: (
-      <p>
-        KAIRO usa modelos de inteligencia artificial para clasificar contactos, detectar señales y
-        sugerir mensajes. La IA puede equivocarse o producir resultados imprecisos. Las decisiones
-        comerciales finales son responsabilidad del equipo humano del cliente.
-      </p>
-    ),
-  },
-  {
-    id: "prueba-demo",
-    title: "Demo y prueba gratuita",
-    content: (
-      <p>
-        La auditoría / demo gratuita es una sesión de revisión sin compromiso. La duración, el alcance
-        y los términos de cualquier prueba gratuita posterior se comunican durante esa sesión y
-        pueden variar.
-      </p>
-    ),
-  },
-  {
-    id: "planes",
-    title: "Planes y pagos",
-    content: (
-      <p>
-        Cuando aplique, los planes, precios, formas de pago y políticas de facturación se acuerdan
-        por escrito con cada cliente o se publican en una sección dedicada del sitio. Esta landing
-        no constituye una oferta vinculante de planes hasta que el cliente y KAIRO firmen un acuerdo
-        o acepten expresamente los términos comerciales del plan.
-      </p>
     ),
   },
   {
@@ -250,66 +260,77 @@ const SECTIONS: { id: string; title: string; content: React.ReactNode }[] = [
     title: "Propiedad intelectual",
     content: (
       <p>
-        El Servicio, su marca, su código y sus contenidos son propiedad de KAIRO. El cliente
-        conserva la propiedad de los datos que carga. KAIRO recibe una licencia limitada para
-        procesar esos datos exclusivamente con el fin de prestar el Servicio.
+        El software, marca, logotipos, contenido del sitio, modelos, prompts internos y materiales de marketing son
+        propiedad de {ENTITY} o de sus licenciantes. El acceso al servicio no implica cesión de derechos de propiedad
+        intelectual, salvo la licencia de uso limitada y revocable concedida durante la vigencia del contrato.
       </p>
     ),
   },
   {
-    id: "privacidad",
-    title: "Privacidad y datos",
+    id: "datos-cliente",
+    title: "Datos del cliente",
     content: (
       <p>
-        El tratamiento de datos personales se rige por nuestra{" "}
-        <Link href="/politica-de-privacidad" className="text-primary underline-offset-2 hover:underline">
-          Política de Privacidad
-        </Link>
-        , que forma parte de estos Términos.
+        Los datos cargados por el cliente en KAIRO son y siguen siendo de propiedad del cliente. KAIRO actúa como
+        encargado de tratamiento conforme a la Política de Privacidad. Tras la terminación del contrato y luego del
+        plazo de retención técnico, los datos podrán ser eliminados o devueltos a solicitud.
       </p>
     ),
   },
   {
     id: "disponibilidad",
-    title: "Disponibilidad",
+    title: "Disponibilidad del servicio",
     content: (
       <p>
-        Hacemos esfuerzos razonables para mantener el Servicio disponible, pero no garantizamos
-        disponibilidad continua sin interrupciones. Pueden existir ventanas de mantenimiento,
-        incidentes de proveedores o eventos de fuerza mayor que afecten el Servicio.
+        KAIRO se entrega bajo el principio de <em>mejores esfuerzos</em> (best-effort). Pueden existir interrupciones
+        por mantenimiento, fallos de proveedores (hosting, base de datos, modelos de IA) o causas de fuerza mayor.
+        KAIRO no garantiza disponibilidad ininterrumpida ni asume responsabilidad por lucro cesante derivado de
+        ventanas de indisponibilidad.
       </p>
     ),
   },
   {
-    id: "terceros",
-    title: "Proveedores terceros",
-    content: (
-      <p>
-        Para prestar el Servicio usamos proveedores como Supabase, Vercel, Cal.com y, cuando aplica,
-        WhatsApp y servicios de email transaccional. La disponibilidad y términos de esos
-        proveedores también pueden afectar la operación del Servicio.
-      </p>
-    ),
-  },
-  {
-    id: "limitacion-responsabilidad",
+    id: "responsabilidad",
     title: "Limitación de responsabilidad",
     content: (
       <p>
-        En la máxima medida permitida por la ley, KAIRO no será responsable por daños indirectos,
-        lucro cesante, pérdida de oportunidades comerciales, daños reputacionales o pérdida de datos
-        derivados del uso o imposibilidad de uso del Servicio.
+        En la máxima medida permitida por ley, la responsabilidad total de KAIRO frente al cliente por cualquier
+        reclamo asociado al servicio se limita al monto efectivamente pagado por el cliente en los últimos 12 meses.
+        KAIRO no responde por daños indirectos, lucro cesante, pérdida de datos no atribuible a su culpa, ni por
+        decisiones comerciales del cliente basadas en las recomendaciones.
+      </p>
+    ),
+  },
+  {
+    id: "indemnidad",
+    title: "Indemnidad",
+    content: (
+      <p>
+        El cliente mantendrá indemne a KAIRO frente a cualquier reclamo de terceros derivado del uso indebido del
+        servicio, del incumplimiento de estos términos o de la normativa aplicable (incluida la de protección de
+        datos y mensajería).
+      </p>
+    ),
+  },
+  {
+    id: "terminacion",
+    title: "Terminación",
+    content: (
+      <p>
+        KAIRO podrá suspender o terminar el acceso del cliente, sin reembolso, en casos de incumplimiento grave,
+        fraude, abuso, riesgo legal o reputacional. El cliente puede dejar de usar el servicio en cualquier momento,
+        sin que ello dé derecho a reembolso de pagos únicos ya ejecutados.
       </p>
     ),
   },
   {
     id: "modificaciones",
-    title: "Modificaciones",
+    title: "Modificaciones del servicio y de estos términos",
     content: (
       <p>
-        Podemos modificar estos Términos para reflejar cambios legales, operativos o de producto.
-        Notificaremos cambios materiales en el sitio o por los canales de contacto con el cliente.
-        El uso continuado del Servicio después de la modificación implica aceptación.
+        KAIRO podrá actualizar funcionalidades, planes y estos Términos. Los cambios materiales serán comunicados con
+        antelación razonable por los canales de contacto registrados. El uso continuado del servicio implica la
+        aceptación de la nueva versión.
       </p>
     ),
   },
@@ -318,18 +339,32 @@ const SECTIONS: { id: string; title: string; content: React.ReactNode }[] = [
     title: "Ley aplicable y jurisdicción",
     content: (
       <p>
-        Estos Términos se rigen por las leyes de <strong>[PAÍS / JURISDICCIÓN]</strong>. Cualquier
-        controversia se someterá a los tribunales competentes de dicha jurisdicción, salvo norma
-        imperativa en contrario.
+        Estos Términos se rigen por las leyes de la República del Perú. Cualquier controversia será sometida
+        previamente a un intento de negociación de buena fe y, en su defecto, a los tribunales competentes de{" "}
+        {JURISDICTION}, renunciando las partes a cualquier otro fuero que pudiera corresponderles.
       </p>
     ),
   },
   {
-    id: "contacto-terms",
+    id: "comunicaciones",
+    title: "Comunicaciones",
+    content: (
+      <p>
+        Las comunicaciones oficiales se realizarán al correo registrado por el usuario. Toda notificación a KAIRO
+        deberá dirigirse a {LEGAL_EMAIL}.
+      </p>
+    ),
+  },
+  {
+    id: "contacto",
     title: "Contacto",
     content: (
       <p>
-        Para consultas sobre estos Términos, escríbenos a <strong>[CORREO LEGAL / SOPORTE]</strong>.
+        Para cualquier consulta sobre estos Términos y Condiciones escríbenos a{" "}
+        <a href={`mailto:${LEGAL_EMAIL}`} className="text-primary hover:opacity-80 underline">
+          {LEGAL_EMAIL}
+        </a>
+        . Razón social: {ENTITY}. Jurisdicción: {JURISDICTION}.
       </p>
     ),
   },

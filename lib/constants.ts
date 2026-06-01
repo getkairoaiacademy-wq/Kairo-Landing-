@@ -3,8 +3,8 @@
 // Cal.com event slug — public link of the demo event.
 // Example: "getkairo/demo" or "getkairoaiacademy/30min".
 // Public-only. Never put CAL_API_KEY here. Override via NEXT_PUBLIC_CAL_LINK in .env.local.
-export const CAL_LINK = process.env.NEXT_PUBLIC_CAL_LINK || "getkairoaiacademy/kairo-demo"
-export const CAL_NAMESPACE = process.env.NEXT_PUBLIC_CAL_NAMESPACE || "kairo-demo"
+export const CAL_LINK = process.env.NEXT_PUBLIC_CAL_LINK || "getkairo/30min"
+export const CAL_NAMESPACE = process.env.NEXT_PUBLIC_CAL_NAMESPACE || "30min"
 
 // Backward-compat aliases used across the landing for the primary CTA.
 // They now point to the Cal.com modal trigger logic, not Calendly.

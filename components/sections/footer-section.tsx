@@ -131,13 +131,19 @@ export function FooterSection() {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground">
-            © KAIRO. Sistema de recuperación de ingresos para negocios.
+        <div className="pt-8 border-t border-border space-y-4">
+          <p className="text-[11px] leading-relaxed text-muted-foreground/80 max-w-3xl">
+            KAIRO entrega análisis, estimaciones y recomendaciones comerciales. No garantiza ingresos específicos.
+            Los resultados dependen del seguimiento, el equipo y el contexto comercial de cada negocio.
           </p>
-          <p className="text-xs text-muted-foreground">
-            Beta privada activa · <span className="text-primary font-medium">Cupos limitados</span>
-          </p>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-muted-foreground">
+              © {new Date().getFullYear()} KAIRO TECHNOLOGIES S.A.C. · Lima, Perú · getkairoaiacademy@gmail.com
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Beta privada activa · <span className="text-primary font-medium">Cupos limitados</span>
+            </p>
+          </div>
         </div>
       </div>
     </footer>

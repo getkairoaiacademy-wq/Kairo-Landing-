@@ -29,6 +29,10 @@ export interface AuditLeadInput {
   monthlyConversationVolume: ConversationVolume
   mainProblem?: string
   ctaLocation: string
+  // Legal consents — privacy + terms required, marketing optional.
+  privacyAccepted: boolean
+  termsAccepted: boolean
+  marketingConsent?: boolean
 }
 
 export interface AuditLeadRecord extends AuditLeadInput {

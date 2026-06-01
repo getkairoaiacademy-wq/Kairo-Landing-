@@ -42,7 +42,14 @@ function storeSet(key: string, value: string) {
 const easeOut = [0.16, 1, 0.3, 1] as const
 const emailRe = /\S+@\S+\.\S+/
 
-type FormState = { clinicName: string; fullName: string; email: string }
+type FormState = {
+  clinicName: string
+  fullName: string
+  email: string
+  privacyAccepted: boolean
+  termsAccepted: boolean
+  marketingConsent: boolean
+}
 type FieldError = Partial<Record<keyof FormState, string>>
 
 function isTypingElsewhere(): boolean {
@@ -60,7 +67,14 @@ function isTypingElsewhere(): boolean {
 export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
   const reduce = useReducedMotion()
   const [autoOpen, setAutoOpen] = useState(false)
-  const [state, setState] = useState<FormState>({ clinicName: "", fullName: "", email: "" })
+  const [state, setState] = useState<FormState>({
+    clinicName: "",
+    fullName: "",
+    email: "",
+    privacyAccepted: false,
+    termsAccepted: false,
+    marketingConsent: false,
+  })
   const [errors, setErrors] = useState<FieldError>({})
   const [submitting, setSubmitting] = useState(false)
   const [saveFailed, setSaveFailed] = useState(false)
@@ -165,6 +179,8 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
     if (!s.fullName.trim()) e.fullName = "¿Cómo te llamas?"
     if (!s.email.trim()) e.email = "Déjanos un correo para coordinar."
     else if (!emailRe.test(s.email.trim())) e.email = "Revisa el correo antes de continuar."
+    if (!s.privacyAccepted) e.privacyAccepted = "Acepta la Política de Privacidad."
+    if (!s.termsAccepted) e.termsAccepted = "Acepta los Términos y Condiciones."
     return e
   }
 
@@ -188,6 +204,9 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
       usesWhatsapp: true,
       monthlyConversationVolume: "medio",
       ctaLocation: location,
+      privacyAccepted: state.privacyAccepted,
+      termsAccepted: state.termsAccepted,
+      marketingConsent: state.marketingConsent,
     }
 
     const result = await saveAuditLead(input)
@@ -352,6 +371,41 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
                   />
                 </PopupField>
 
+                {/* Consent — privacy + terms required, marketing optional */}
+                <div className="space-y-2 pt-1">
+                  <PopupConsent
+                    id="pop-consent-privacy"
+                    checked={state.privacyAccepted}
+                    onChange={(v) => update("privacyAccepted", v)}
+                    error={errors.privacyAccepted}
+                  >
+                    Acepto la{" "}
+                    <a href="/politica-de-privacidad" target="_blank" rel="noopener noreferrer" className="underline hover:text-white" style={{ color: "#39FF88" }}>
+                      Política de Privacidad
+                    </a>
+                    .
+                  </PopupConsent>
+                  <PopupConsent
+                    id="pop-consent-terms"
+                    checked={state.termsAccepted}
+                    onChange={(v) => update("termsAccepted", v)}
+                    error={errors.termsAccepted}
+                  >
+                    Acepto los{" "}
+                    <a href="/terminos-y-condiciones" target="_blank" rel="noopener noreferrer" className="underline hover:text-white" style={{ color: "#39FF88" }}>
+                      Términos y Condiciones
+                    </a>
+                    .
+                  </PopupConsent>
+                  <PopupConsent
+                    id="pop-consent-marketing"
+                    checked={state.marketingConsent}
+                    onChange={(v) => update("marketingConsent", v)}
+                  >
+                    Acepto recibir comunicaciones comerciales (opcional).
+                  </PopupConsent>
+                </div>
+
                 <button
                   type="submit"
                   disabled={submitting}
@@ -361,14 +415,6 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
                   {submitting ? "Preparando tu auditoría…" : "Agendar mi auditoría gratuita"}
                   {!submitting && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />}
                 </button>
-
-                <p className="text-center text-[10px] leading-relaxed text-white/35">
-                  Sin spam. Sin automatizaciones agresivas. Solo una revisión clara de oportunidades comerciales.
-                  Al continuar aceptas nuestra{" "}
-                  <a href="/politica-de-privacidad" className="underline hover:text-white/60" target="_blank" rel="noopener noreferrer">Política de Privacidad</a>{" "}
-                  y{" "}
-                  <a href="/terminos-y-condiciones" className="underline hover:text-white/60" target="_blank" rel="noopener noreferrer">Términos</a>.
-                </p>
 
                 <button
                   type="button"
@@ -456,6 +502,40 @@ function PopupField({
       {children}
       {error && (
         <p role="alert" className="text-[11px] text-red-400">
+          {error}
+        </p>
+      )}
+    </div>
+  )
+}
+
+function PopupConsent({
+  id,
+  checked,
+  onChange,
+  children,
+  error,
+}: {
+  id: string
+  checked: boolean
+  onChange: (v: boolean) => void
+  children: React.ReactNode
+  error?: string
+}) {
+  return (
+    <div>
+      <label htmlFor={id} className="flex items-start gap-2 cursor-pointer">
+        <input
+          id={id}
+          type="checkbox"
+          checked={checked}
+          onChange={(e) => onChange(e.target.checked)}
+          className="mt-0.5 h-4 w-4 rounded border-white/30 bg-white/[0.06] text-[#39FF88] focus:ring-2 focus:ring-[#39FF88]/50"
+        />
+        <span className="text-[11px] leading-relaxed text-white/65">{children}</span>
+      </label>
+      {error && (
+        <p role="alert" className="ml-6 mt-0.5 text-[10px] text-red-400">
           {error}
         </p>
       )}

@@ -29,6 +29,9 @@ type FormState = {
   usesWhatsapp: "" | "si" | "no"
   monthlyConversationVolume: ConversationVolume | ""
   mainProblem: string
+  privacyAccepted: boolean
+  termsAccepted: boolean
+  marketingConsent: boolean
 }
 
 const initialState: FormState = {
@@ -39,6 +42,9 @@ const initialState: FormState = {
   usesWhatsapp: "",
   monthlyConversationVolume: "",
   mainProblem: "",
+  privacyAccepted: false,
+  termsAccepted: false,
+  marketingConsent: false,
 }
 
 type FieldError = Partial<Record<keyof FormState, string>>
@@ -77,6 +83,8 @@ function validate(state: FormState): FieldError {
   if (!state.clinicType) errors.clinicType = "Selecciona el tipo de negocio."
   if (!state.usesWhatsapp) errors.usesWhatsapp = "Indica si atienden por WhatsApp."
   if (!state.monthlyConversationVolume) errors.monthlyConversationVolume = "Selecciona un volumen."
+  if (!state.privacyAccepted) (errors as FieldError & { privacyAccepted?: string }).privacyAccepted = "Debes aceptar la Política de Privacidad."
+  if (!state.termsAccepted) (errors as FieldError & { termsAccepted?: string }).termsAccepted = "Debes aceptar los Términos y Condiciones."
   return errors
 }
 
@@ -170,6 +178,9 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
       monthlyConversationVolume: state.monthlyConversationVolume as ConversationVolume,
       mainProblem: state.mainProblem.trim() || undefined,
       ctaLocation,
+      privacyAccepted: state.privacyAccepted,
+      termsAccepted: state.termsAccepted,
+      marketingConsent: state.marketingConsent,
     }
 
     const hpField = document.getElementById("audit-website") as HTMLInputElement | null
@@ -399,6 +410,41 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
                   />
                 </Field>
 
+                {/* Consent block — privacy + terms required, marketing optional */}
+                <div className="space-y-2.5 pt-1">
+                  <ConsentCheckbox
+                    id="audit-consent-privacy"
+                    checked={state.privacyAccepted}
+                    onChange={(v) => update("privacyAccepted", v)}
+                    error={(errors as FieldError & { privacyAccepted?: string }).privacyAccepted}
+                  >
+                    Acepto la{" "}
+                    <a href="/politica-de-privacidad" target="_blank" rel="noopener noreferrer" className="underline text-primary hover:opacity-80">
+                      Política de Privacidad
+                    </a>
+                    .
+                  </ConsentCheckbox>
+                  <ConsentCheckbox
+                    id="audit-consent-terms"
+                    checked={state.termsAccepted}
+                    onChange={(v) => update("termsAccepted", v)}
+                    error={(errors as FieldError & { termsAccepted?: string }).termsAccepted}
+                  >
+                    Acepto los{" "}
+                    <a href="/terminos-y-condiciones" target="_blank" rel="noopener noreferrer" className="underline text-primary hover:opacity-80">
+                      Términos y Condiciones
+                    </a>
+                    .
+                  </ConsentCheckbox>
+                  <ConsentCheckbox
+                    id="audit-consent-marketing"
+                    checked={state.marketingConsent}
+                    onChange={(v) => update("marketingConsent", v)}
+                  >
+                    Acepto recibir comunicaciones comerciales de KAIRO (opcional).
+                  </ConsentCheckbox>
+                </div>
+
                 <button
                   type="submit"
                   disabled={submitting}
@@ -480,6 +526,42 @@ function inputClass(hasError: boolean) {
     "focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/50 transition-colors",
     hasError ? "border-red-500/60" : "border-border/70",
   ].join(" ")
+}
+
+function ConsentCheckbox({
+  id,
+  checked,
+  onChange,
+  children,
+  error,
+}: {
+  id: string
+  checked: boolean
+  onChange: (v: boolean) => void
+  children: React.ReactNode
+  error?: string
+}) {
+  return (
+    <div>
+      <label htmlFor={id} className="flex items-start gap-2.5 cursor-pointer group">
+        <input
+          id={id}
+          type="checkbox"
+          checked={checked}
+          onChange={(e) => onChange(e.target.checked)}
+          className="mt-0.5 h-4 w-4 rounded border-border/70 bg-background/60 text-primary focus:ring-2 focus:ring-primary/40"
+        />
+        <span className="text-[12px] leading-relaxed text-foreground/80 group-hover:text-foreground">
+          {children}
+        </span>
+      </label>
+      {error && (
+        <p role="alert" className="ml-6 mt-0.5 text-[11px] text-red-400">
+          {error}
+        </p>
+      )}
+    </div>
+  )
 }
 
 function chipClass(active: boolean, hasError: boolean) {

@@ -70,6 +70,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: validation.error }, { status: 400 })
   }
 
+  // Legal consents — privacy + terms must be explicitly true.
+  if (data.privacyAccepted !== true || data.termsAccepted !== true) {
+    return NextResponse.json({ ok: false, error: "consent_required" }, { status: 400 })
+  }
+
   const record = {
     full_name: sanitize(data.fullName),
     clinic_name: sanitize(data.clinicName),
@@ -92,6 +97,10 @@ export async function POST(req: Request) {
     utm_campaign: sanitize(data.utm_campaign),
     utm_content: sanitize(data.utm_content),
     utm_term: sanitize(data.utm_term),
+    privacy_accepted: true,
+    terms_accepted: true,
+    marketing_consent: data.marketingConsent === true,
+    booking_status: "pending",
   }
 
   try {
