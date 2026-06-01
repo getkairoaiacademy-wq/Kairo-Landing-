@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
-const VALID_CLINIC_TYPES = ["dental", "estetica", "dermatologica", "medicina_estetica", "ortodoncia", "implantes", "otro"]
+const VALID_CLINIC_TYPES = ["salud_estetica", "restaurante", "inmobiliaria", "automotriz", "educacion", "agencia_consultora", "legal", "retail", "servicios", "otro"]
 const VALID_VOLUMES = ["bajo", "medio", "alto"]
 const MAX_STRING_LENGTH = 500
 

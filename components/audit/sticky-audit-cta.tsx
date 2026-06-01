@@ -64,7 +64,7 @@ export function StickyAuditCta() {
                 <Sparkles className="w-3.5 h-3.5 text-primary" />
               </span>
               <span className="text-sm text-foreground/90">
-                ¿Tu clínica tiene oportunidades ocultas?
+                ¿Tu negocio tiene oportunidades ocultas?
               </span>
               <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
                 {CTA_PRIMARY_SHORT}

@@ -33,10 +33,10 @@ export function TrustMechanismSection() {
           className="text-center mb-14"
         >
           <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.6rem] leading-tight tracking-tight text-foreground mb-4">
-            Un diagnóstico guiado, con control de tu clínica.
+            Un diagnóstico guiado, con control de tu negocio.
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-base leading-relaxed">
-            KAIRO trabaja con la información que tu clínica decide compartir. El objetivo no es invadir
+            KAIRO trabaja con la información que tu negocio decide compartir. El objetivo no es invadir
             tus conversaciones, sino ayudarte a encontrar oportunidades comerciales que ya existen.
           </p>
         </motion.div>

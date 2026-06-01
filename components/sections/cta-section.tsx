@@ -1,9 +1,10 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowRight } from "lucide-react"
 import { CTA_PRIMARY } from "@/lib/constants"
 import { useAuditModal } from "@/components/audit/audit-modal-context"
+import { WordReveal } from "@/components/effects/word-reveal"
+import { MagneticButton } from "@/components/effects/magnetic-button"
 
 export function CtaSection() {
   const { open } = useAuditModal()
@@ -24,29 +25,51 @@ export function CtaSection() {
         className="relative max-w-3xl mx-auto text-center"
       >
         <h2
-          className="font-display italic text-3xl sm:text-4xl lg:text-[3.2rem] leading-[1.12] tracking-tight text-foreground mb-5"
-          style={{ paddingBottom: "0.15em" }}
+          className="text-3xl sm:text-4xl lg:text-[3.4rem] mb-5"
+          style={{ paddingBottom: "0.2em" }}
         >
-          Antes de buscar más pacientes,{" "}
-          <span className="text-gradient-green">revisa los que ya tienes.</span>
+          <WordReveal
+            as="span"
+            text="Antes de buscar más clientes,"
+            whenInView
+            stagger={0.06}
+            className="block"
+            style={{
+              fontFamily: "var(--font-macro)",
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.0,
+              color: "var(--foreground)",
+            }}
+          />
+          <WordReveal
+            as="span"
+            text="revisa los que ya tienes."
+            whenInView
+            stagger={0.07}
+            delay={0.22}
+            className="block text-gradient-green"
+            style={{
+              fontFamily: "var(--font-display)",
+              fontStyle: "italic",
+              fontWeight: 400,
+              letterSpacing: "-0.03em",
+              lineHeight: 1.04,
+            }}
+          />
         </h2>
         <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-10">
-          Agenda una Auditoría Gratuita de Ingresos Ocultos y descubre si tu clínica tiene consultas,
-          cotizaciones o pacientes antiguos listos para recuperar.
+          Agenda una Auditoría Gratuita de Ingresos Ocultos y descubre si tu negocio tiene consultas,
+          cotizaciones o clientes antiguos listos para recuperar.
         </p>
 
-        <button
-          type="button"
-          onClick={() => open("final_cta")}
-          className="group inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary text-primary-foreground font-semibold text-base hover:opacity-95 transition-all duration-300 glow-green hover:scale-[1.02]"
-        >
+        <MagneticButton onClick={() => open("final_cta")} ariaLabel={CTA_PRIMARY}>
           {CTA_PRIMARY}
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </button>
+        </MagneticButton>
 
         <p className="text-xs text-muted-foreground/80 mt-6 max-w-md mx-auto">
           Llamada guiada. Sin compromiso. Sin automatización masiva. Con 3 días de acceso gratuito si
-          tu clínica califica.
+          tu negocio califica.
         </p>
       </motion.div>
     </section>

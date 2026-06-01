@@ -41,12 +41,15 @@ const initialState: FormState = {
 type FieldError = Partial<Record<keyof FormState, string>>
 
 const CLINIC_OPTIONS: { value: ClinicType; label: string }[] = [
-  { value: "dental", label: "Dental" },
-  { value: "estetica", label: "Estética" },
-  { value: "dermatologica", label: "Dermatológica" },
-  { value: "medicina_estetica", label: "Medicina estética" },
-  { value: "ortodoncia", label: "Ortodoncia" },
-  { value: "implantes", label: "Implantes" },
+  { value: "salud_estetica", label: "Salud, clínica o estética" },
+  { value: "restaurante", label: "Restaurante o gastronomía" },
+  { value: "inmobiliaria", label: "Inmobiliaria" },
+  { value: "automotriz", label: "Concesionario / automotriz" },
+  { value: "educacion", label: "Academia o educación" },
+  { value: "agencia_consultora", label: "Agencia o consultora" },
+  { value: "legal", label: "Estudio jurídico" },
+  { value: "retail", label: "Tienda o retail" },
+  { value: "servicios", label: "Empresa de servicios" },
   { value: "otro", label: "Otro" },
 ]
 
@@ -59,7 +62,7 @@ const VOLUME_OPTIONS: { value: ConversationVolume; label: string }[] = [
 function validate(state: FormState): FieldError {
   const errors: FieldError = {}
   if (!state.fullName.trim()) errors.fullName = "Tu nombre es requerido."
-  if (!state.clinicName.trim()) errors.clinicName = "Nombre de la clínica requerido."
+  if (!state.clinicName.trim()) errors.clinicName = "Nombre del negocio requerido."
   if (!state.contact.trim()) {
     errors.contact = "Email o WhatsApp requerido."
   } else {
@@ -68,7 +71,7 @@ function validate(state: FormState): FieldError {
     const isPhone = /^[+\d\s().-]{7,}$/.test(v)
     if (!isEmail && !isPhone) errors.contact = "Ingresa un email o número válido."
   }
-  if (!state.clinicType) errors.clinicType = "Selecciona el tipo de clínica."
+  if (!state.clinicType) errors.clinicType = "Selecciona el tipo de negocio."
   if (!state.usesWhatsapp) errors.usesWhatsapp = "Indica si atienden por WhatsApp."
   if (!state.monthlyConversationVolume) errors.monthlyConversationVolume = "Selecciona un volumen."
   return errors
@@ -200,7 +203,7 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
       step === "form"
         ? {
             title: "Prepara tu auditoría gratuita",
-            desc: "Completa estos datos para que la llamada sea más útil y podamos mostrarte oportunidades cercanas al tipo de clínica que tienes.",
+            desc: "Completa estos datos para que la llamada sea más útil y podamos mostrarte oportunidades cercanas al tipo de negocio que tienes.",
           }
         : {
             title: "Listo. Ahora elige tu horario.",
@@ -279,11 +282,11 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
                     value={state.fullName}
                     onChange={(e) => update("fullName", e.target.value)}
                     className={inputClass(!!errors.fullName)}
-                    placeholder="Dra. Valeria Rojas"
+                    placeholder="Valeria Rojas"
                   />
                 </Field>
 
-                <Field label="Nombre de la clínica" error={errors.clinicName} htmlFor="audit-clinic">
+                <Field label="Nombre del negocio" error={errors.clinicName} htmlFor="audit-clinic">
                   <input
                     id="audit-clinic"
                     data-field="clinicName"
@@ -292,7 +295,7 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
                     value={state.clinicName}
                     onChange={(e) => update("clinicName", e.target.value)}
                     className={inputClass(!!errors.clinicName)}
-                    placeholder="Clínica Dental Aurora"
+                    placeholder="Ej. Estudio Aurora"
                   />
                 </Field>
 
@@ -311,12 +314,12 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
                     value={state.contact}
                     onChange={(e) => update("contact", e.target.value)}
                     className={inputClass(!!errors.contact)}
-                    placeholder="valeria@clinica.com o +51 999 999 999"
+                    placeholder="valeria@negocio.com o +51 999 999 999"
                   />
                 </Field>
 
                 <Field
-                  label="Tipo de clínica"
+                  label="Tipo de negocio"
                   error={errors.clinicType}
                   htmlFor="audit-clinicType"
                 >

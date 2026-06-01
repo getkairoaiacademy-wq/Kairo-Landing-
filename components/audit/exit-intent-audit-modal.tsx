@@ -107,7 +107,7 @@ export function ExitIntentAuditModal() {
               className="font-display text-2xl leading-tight text-foreground pr-8"
             >
               Antes de irte:{" "}
-              <span className="text-gradient-green">revisa los pacientes que ya tienes.</span>
+              <span className="text-gradient-green">revisa los clientes que ya tienes.</span>
             </h2>
             <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
               Puede que tu próxima cita no venga de un anuncio nuevo, sino de una conversación

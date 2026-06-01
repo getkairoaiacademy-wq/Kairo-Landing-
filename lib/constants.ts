@@ -1,7 +1,7 @@
 // KAIRO Landing Page Constants
 
 // Calendly URL for the Free Hidden Revenue Audit (primary CTA across landing).
-export const AUDIT_CTA_URL = "https://calendly.com/getkairoaiacademy/30min"
+export const AUDIT_CTA_URL = "https://calendly.com/getkairoaiacademy/delegar-setup-al-equipo"
 // Alias preferred in lead-capture flow.
 export const CALENDLY_AUDIT_URL = AUDIT_CTA_URL
 

@@ -1,14 +1,15 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { WordReveal } from "@/components/effects/word-reveal"
 
 const situations = [
   "Preguntaron precio y nadie volvió a escribirles.",
   "Recibieron una cotización y nunca se cerró.",
   "Dijeron \"lo voy a pensar\" y quedaron enterrados en WhatsApp.",
   "Faltaron a su cita y nadie la reprogramó.",
-  "Fueron pacientes antiguos y nadie los volvió a contactar.",
-  "Pidieron información de un tratamiento de alto valor y no hubo seguimiento.",
+  "Fueron clientes antiguos y nadie los volvió a contactar.",
+  "Pidieron información de un servicio o producto de alto valor y no hubo seguimiento.",
 ]
 
 export function ParadigmShiftSection() {
@@ -25,15 +26,41 @@ export function ParadigmShiftSection() {
           className="text-center mb-14 max-w-3xl mx-auto"
         >
           <h2
-            className="font-display italic text-3xl sm:text-4xl lg:text-[2.95rem] leading-[1.12] tracking-tight text-foreground mb-4"
-            style={{ paddingBottom: "0.15em" }}
+            className="text-3xl sm:text-4xl lg:text-[3.1rem] mb-4"
+            style={{ paddingBottom: "0.18em" }}
           >
-            No estás perdiendo pacientes.
-            <br />
-            <span className="text-gradient-green">Estás perdiendo seguimiento.</span>
+            <WordReveal
+              as="span"
+              text="No estás perdiendo clientes."
+              whenInView
+              stagger={0.06}
+              className="block"
+              style={{
+                fontFamily: "var(--font-macro)",
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.0,
+                color: "var(--foreground)",
+              }}
+            />
+            <WordReveal
+              as="span"
+              text="Estás perdiendo seguimiento."
+              whenInView
+              stagger={0.07}
+              delay={0.22}
+              className="block text-gradient-green"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontStyle: "italic",
+                fontWeight: 400,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.04,
+              }}
+            />
           </h2>
           <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
-            Muchos pacientes no dijeron que no. Solo preguntaron, dudaron, pidieron precio o dejaron la
+            Muchos clientes no dijeron que no. Solo preguntaron, dudaron, pidieron precio o dejaron la
             conversación abierta.
           </p>
         </motion.div>
@@ -46,7 +73,7 @@ export function ParadigmShiftSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.4, delay: idx * 0.05 }}
-              className="glass-card rounded-xl p-5 flex items-start gap-3 hover:border-primary/25 transition-colors duration-300"
+              className="glass-card card-premium rounded-xl p-5 flex items-start gap-3"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-primary/60 mt-2 shrink-0" aria-hidden="true" />
               <p className="text-sm text-foreground/90 leading-relaxed">{s}</p>

@@ -1,9 +1,11 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Check, Sparkles, ArrowRight } from "lucide-react"
+import { Check, Sparkles } from "lucide-react"
 import { BETA_PRICE, RECOVERY_PRICE, CTA_PRIMARY } from "@/lib/constants"
 import { useAuditModal } from "@/components/audit/audit-modal-context"
+import { WordReveal } from "@/components/effects/word-reveal"
+import { MagneticButton } from "@/components/effects/magnetic-button"
 
 const includes = [
   "Auditoría inicial de ingresos ocultos",
@@ -37,15 +39,42 @@ export function PricingSection() {
             </span>
           </div>
           <h2
-            className="font-display italic text-3xl sm:text-4xl lg:text-[2.85rem] leading-[1.1] tracking-tight text-foreground mb-4"
-            style={{ paddingBottom: "0.15em" }}
+            className="text-3xl sm:text-4xl lg:text-[3rem] mb-4"
+            style={{ paddingBottom: "0.18em" }}
           >
-            Una sola cita recuperada{" "}
-            <span className="text-gradient-green">puede justificar KAIRO.</span>
+            <WordReveal
+              as="span"
+              text="Una sola cita recuperada"
+              whenInView
+              stagger={0.06}
+              className="block"
+              style={{
+                fontFamily: "var(--font-macro)",
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.0,
+                color: "var(--foreground)",
+              }}
+            />
+            <WordReveal
+              as="span"
+              text="puede justificar KAIRO."
+              whenInView
+              stagger={0.07}
+              delay={0.22}
+              className="block text-gradient-green"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontStyle: "italic",
+                fontWeight: 400,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.04,
+              }}
+            />
           </h2>
           <p className="text-muted-foreground text-base leading-relaxed">
             El precio no es el centro de la decisión. La auditoría te muestra primero si KAIRO aplica
-            para tu clínica.
+            para tu negocio.
           </p>
         </motion.div>
 
@@ -54,7 +83,7 @@ export function PricingSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6 }}
-          className="glass-card rounded-3xl p-8 sm:p-10 lg:p-12 glow-green relative overflow-hidden max-w-3xl mx-auto"
+          className="glass-card card-premium rounded-3xl p-8 sm:p-10 lg:p-12 glow-green relative overflow-hidden max-w-3xl mx-auto"
         >
           <div className="absolute -top-32 -right-32 w-80 h-80 bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
 
@@ -99,17 +128,12 @@ export function PricingSection() {
               ))}
             </ul>
 
-            <button
-              type="button"
-              onClick={() => open("pricing")}
-              className="group inline-flex w-full sm:w-auto items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-primary text-primary-foreground font-semibold text-base hover:opacity-95 transition-all duration-300 glow-green hover:scale-[1.02]"
-            >
+            <MagneticButton onClick={() => open("pricing")} ariaLabel={CTA_PRIMARY}>
               {CTA_PRIMARY}
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
+            </MagneticButton>
 
             <p className="text-xs text-muted-foreground mt-4">
-              Acceso anticipado para las primeras clínicas. 3 días de uso guiado si tu clínica
+              Acceso anticipado para las primeros negocios. 3 días de uso guiado si tu negocio
               califica tras la auditoría.
             </p>
           </div>

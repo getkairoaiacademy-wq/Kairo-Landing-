@@ -4,19 +4,19 @@ import { motion } from "framer-motion"
 import { Check, X } from "lucide-react"
 
 const forYou = [
-  "Clínicas que atienden por WhatsApp.",
-  "Clínicas con base de contactos o pacientes antiguos.",
-  "Clínicas con tratamientos de ticket medio o alto.",
-  "Clínicas con cotizaciones pendientes.",
-  "Clínicas con equipo de recepción o ventas.",
-  "Clínicas que quieren recuperar antes de invertir más en anuncios.",
+  "Negocios que venden y dan seguimiento por WhatsApp.",
+  "Clínicas, restaurantes, inmobiliarias, concesionarios, academias, agencias, estudios jurídicos, centros estéticos o cualquier negocio con base de clientes.",
+  "Ticket medio o alto con cotizaciones que dependen de seguimiento.",
+  "Conversaciones, leads o cotizaciones que se enfrían en el chat.",
+  "Equipos de recepción, ventas o atención que ya gestionan clientes.",
+  "Negocios que prefieren recuperar antes de invertir más en anuncios.",
 ]
 
 const notForYou = [
-  "Clínicas sin base de contactos.",
-  "Clínicas que no atienden por WhatsApp.",
-  "Negocios que quieren hacer spam masivo.",
-  "Clínicas que buscan ingresos garantizados sin seguimiento.",
+  "Negocios sin base de contactos ni historial de clientes.",
+  "Negocios que no atienden ni venden por WhatsApp.",
+  "Equipos que quieren hacer envíos masivos sin aprobación.",
+  "Quienes buscan ingresos garantizados sin trabajo de seguimiento.",
   "Equipos que no quieren accionar campañas ni registrar resultados.",
 ]
 
@@ -32,7 +32,7 @@ export function TargetAudienceSection() {
           className="text-center mb-14 max-w-2xl mx-auto"
         >
           <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.6rem] leading-tight tracking-tight text-foreground mb-4">
-            KAIRO funciona mejor cuando tu clínica ya tiene{" "}
+            KAIRO funciona mejor cuando tu negocio ya tiene{" "}
             <span className="text-gradient-green">oportunidades por recuperar.</span>
           </h2>
           <p className="text-muted-foreground text-base">
@@ -102,7 +102,7 @@ export function TargetAudienceSection() {
             Si no vemos oportunidades claras, te lo decimos.
           </p>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            La auditoría sirve para saber si KAIRO realmente puede ayudarte. Si tu clínica todavía no
+            La auditoría sirve para saber si KAIRO realmente puede ayudarte. Si tu negocio todavía no
             tiene suficiente base, volumen o información para generar un diagnóstico útil, te lo
             diremos directamente.
           </p>

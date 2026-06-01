@@ -2,11 +2,12 @@
 
 import { motion } from "framer-motion"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { WordReveal } from "@/components/effects/word-reveal"
 
 const faqs = [
   {
     q: "¿Tengo que dar acceso a mi WhatsApp?",
-    a: "No como primer paso. KAIRO puede trabajar con información que tu clínica decide compartir, como contactos, chats exportados o bases comerciales. La llamada inicial sirve para explicarte el proceso y definir qué datos usar.",
+    a: "No como primer paso. KAIRO puede trabajar con información que tu negocio decide compartir, como contactos, chats exportados o bases comerciales. La llamada inicial sirve para explicarte el proceso y definir qué datos usar.",
   },
   {
     q: "¿KAIRO envía mensajes automáticamente?",
@@ -14,11 +15,11 @@ const faqs = [
   },
   {
     q: "¿Qué pasa en la auditoría gratuita?",
-    a: "Revisamos si tu clínica tiene oportunidades comerciales recuperables, te mostramos cómo funciona KAIRO y definimos si aplica una prueba guiada de 3 días.",
+    a: "Revisamos si tu negocio tiene oportunidades comerciales recuperables, te mostramos cómo funciona KAIRO y definimos si aplica una prueba guiada de 3 días.",
   },
   {
     q: "¿La prueba gratuita de 3 días es para todos?",
-    a: "No necesariamente. La activamos si tu clínica tiene suficiente información para generar un diagnóstico útil.",
+    a: "No necesariamente. La activamos si tu negocio tiene suficiente información para generar un diagnóstico útil.",
   },
   {
     q: "¿KAIRO garantiza ingresos?",
@@ -29,8 +30,8 @@ const faqs = [
     a: "Puedes empezar con contactos, chats exportados, servicios principales, precios aproximados y horarios de atención.",
   },
   {
-    q: "¿Funciona solo para clínicas dentales?",
-    a: "No. Funciona para clínicas dentales, estéticas, dermatológicas, medicina estética, ortodoncia, implantes, carillas, depilación láser y tratamientos de alto valor atendidos por WhatsApp.",
+    q: "¿Funciona solo para algún rubro específico?",
+    a: "No. Funciona para cualquier negocio que venda y dé seguimiento por WhatsApp: inmobiliarias, concesionarios, restaurantes, academias, agencias, estudios jurídicos, clínicas, centros estéticos y más.",
   },
   {
     q: "¿Qué pasa si mi base está desordenada?",
@@ -49,8 +50,36 @@ export function FaqSection() {
           transition={{ duration: 0.5 }}
           className="text-center mb-14"
         >
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.6rem] leading-tight tracking-tight text-foreground mb-4">
-            Preguntas frecuentes
+          <h2 className="text-3xl sm:text-4xl lg:text-[3rem] mb-4" style={{ paddingBottom: "0.18em" }}>
+            <WordReveal
+              as="span"
+              text="Preguntas"
+              whenInView
+              stagger={0.07}
+              className="block"
+              style={{
+                fontFamily: "var(--font-macro)",
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.0,
+                color: "var(--foreground)",
+              }}
+            />
+            <WordReveal
+              as="span"
+              text="frecuentes."
+              whenInView
+              stagger={0.08}
+              delay={0.18}
+              className="block text-gradient-green"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontStyle: "italic",
+                fontWeight: 400,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.04,
+              }}
+            />
           </h2>
           <p className="text-muted-foreground text-base">
             Las dudas más comunes antes de agendar la auditoría.

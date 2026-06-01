@@ -9,7 +9,7 @@ const bullets = [
   "Tu equipo mantiene el control comercial.",
   "La IA sugiere mensajes, no reemplaza criterio humano.",
   "Las campañas nacen de señales reales, no de envíos masivos.",
-  "El paciente recibe contexto, no mensajes genéricos.",
+  "El cliente recibe contexto, no mensajes genéricos.",
 ]
 
 export function HumanControlSection() {
@@ -32,13 +32,13 @@ export function HumanControlSection() {
             </span>
           </div>
           <h2
-            className="font-display italic text-3xl sm:text-4xl lg:text-[2.85rem] leading-[1.1] tracking-tight text-foreground mb-4"
+            className="font-display text-3xl sm:text-4xl lg:text-[2.85rem] leading-[1.1] tracking-tight text-foreground mb-4"
             style={{ paddingBottom: "0.15em" }}
           >
             La IA prepara. <span className="text-gradient-green">Tu equipo aprueba.</span>
           </h2>
           <p className="text-muted-foreground text-base leading-relaxed">
-            KAIRO no está diseñado para hacer spam. Está diseñado para que tu clínica recupere
+            KAIRO no está diseñado para hacer spam. Está diseñado para que tu negocio recupere
             oportunidades reales con seguimiento contextual.
           </p>
         </motion.div>
@@ -89,9 +89,9 @@ export function HumanControlSection() {
             </div>
 
             <div className="bg-background/60 rounded-xl p-4 mb-4 border border-border/40">
-              <p className="text-xs text-muted-foreground mb-2">Para: Carlos R. · Ortodoncia</p>
+              <p className="text-xs text-muted-foreground mb-2">Para: Carlos R. · Cotización abierta</p>
               <p className="text-sm text-foreground/90 leading-relaxed">
-                Hola, Carlos. Vi que habías consultado por ortodoncia hace unas semanas. Si todavía
+                Hola, Carlos. Vi que habías consultado con nosotros hace unas semanas. Si todavía
                 estás evaluándolo, podemos coordinar una evaluación gratuita y resolver dudas antes
                 de decidir. ¿Te paso disponibilidad?
               </p>
@@ -121,7 +121,7 @@ export function HumanControlSection() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="font-heading text-lg sm:text-xl text-foreground/90 max-w-3xl mx-auto text-center mt-14 leading-relaxed"
         >
-          KAIRO no habla por tu clínica sin permiso.{" "}
+          KAIRO no habla por tu negocio sin permiso.{" "}
           <span className="text-primary font-medium">
             Le dice a tu equipo qué oportunidad no debería dejar pasar.
           </span>

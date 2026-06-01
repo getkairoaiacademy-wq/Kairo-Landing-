@@ -26,7 +26,7 @@ const jsonLd = {
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
   description:
-    "Sistema de recuperación de ingresos para clínicas que atienden por WhatsApp. Detecta consultas perdidas, cotizaciones pendientes y pacientes con potencial de volver.",
+    "Sistema de recuperación de ingresos para negocios que venden y dan seguimiento por WhatsApp. Detecta consultas perdidas, cotizaciones pendientes y clientes con potencial de volver.",
   url: "https://getkairo.lat",
   offers: {
     "@type": "Offer",
@@ -68,8 +68,8 @@ export default function Home() {
       {/* Contextual CTA after diagnosis example */}
       <ContextualAuditCta
         ctaLocation="ctx_after_diagnosis"
-        title="¿Quieres ver este reporte con los datos de tu clínica?"
-        body="En la auditoría revisamos si tu base tiene oportunidades recuperables y te mostramos cómo KAIRO las convierte en campañas accionables."
+        title="¿Quieres ver este reporte con los datos de tu negocio?"
+        body="En la auditoría revisamos si tu base tiene oportunidades recuperables y te mostramos cómo KAIRO las convierte en campañas accionables para tu negocio."
       />
 
       {/* 5. How it works */}
@@ -101,7 +101,7 @@ export default function Home() {
       {/* Contextual CTA after pricing */}
       <ContextualAuditCta
         ctaLocation="ctx_after_pricing"
-        title="Antes de hablar de plan, validemos si aplica a tu clínica."
+        title="Antes de hablar de plan, validemos si aplica a tu negocio."
         body="La auditoría te muestra primero si KAIRO encuentra oportunidades reales. El precio se discute después."
         buttonLabel="Agendar auditoría"
         benefits={["Cupos limitados", "Sin compromiso", "Llamada guiada"]}
@@ -117,7 +117,7 @@ export default function Home() {
       <ContextualAuditCta
         ctaLocation="ctx_after_faq"
         title="¿Resolviste tus dudas? Reserva tu auditoría."
-        body="Una llamada guiada para revisar si tu clínica tiene ingresos ocultos recuperables."
+        body="Una llamada guiada para revisar si tu negocio tiene ingresos ocultos recuperables."
       />
 
       {/* 13. Final CTA */}

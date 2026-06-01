@@ -10,7 +10,7 @@ const metrics = [
   { value: 240, label: "Contactos analizados", suffix: "" },
   { value: 38, label: "Oportunidades detectadas", suffix: "" },
   { value: 11, label: "Cotizaciones pendientes", suffix: "" },
-  { value: 9, label: "Pacientes antiguos recuperables", suffix: "" },
+  { value: 9, label: "Clientes antiguos recuperables", suffix: "" },
   { value: 6, label: "Objeciones por precio", suffix: "" },
   { value: 3, label: "Campañas recomendadas", suffix: "" },
 ]
@@ -54,14 +54,14 @@ export function DiagnosisExampleSection() {
             </span>
           </div>
           <h2
-            className="font-display italic text-3xl sm:text-4xl lg:text-[2.85rem] leading-[1.1] tracking-tight text-foreground mb-4"
+            className="font-display text-3xl sm:text-4xl lg:text-[2.85rem] leading-[1.1] tracking-tight text-foreground mb-4"
             style={{ paddingBottom: "0.15em" }}
           >
             Lo que KAIRO puede revelar en una{" "}
             <span className="text-gradient-green">base desordenada</span>.
           </h2>
           <p className="text-muted-foreground text-base leading-relaxed">
-            Así se vería el primer reporte que recibe una clínica después de la auditoría inicial.
+            Así se vería el primer reporte que recibe un negocio después de la auditoría inicial.
           </p>
         </motion.div>
 
@@ -83,7 +83,7 @@ export function DiagnosisExampleSection() {
                 S/<CountUp to={18420} />
               </p>
               <p className="text-sm text-muted-foreground mt-4 max-w-md leading-relaxed">
-                Estimación basada en valor promedio de los tratamientos en cola y tasa típica de
+                Estimación basada en valor promedio de los servicios en cola y tasa típica de
                 recuperación con seguimiento contextual.
               </p>
             </div>
@@ -116,7 +116,7 @@ export function DiagnosisExampleSection() {
           className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 px-2"
         >
           <p className="text-xs text-muted-foreground max-w-xl">
-            Ejemplo demo basado en una clínica ficticia. Los resultados reales dependen de la calidad
+            Ejemplo demo basado en un negocio ficticia. Los resultados reales dependen de la calidad
             de la base, ticket promedio y ejecución del seguimiento.
           </p>
           <button

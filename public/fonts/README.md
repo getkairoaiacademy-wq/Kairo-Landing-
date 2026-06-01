@@ -11,8 +11,10 @@ Colocar aquí los `.woff2` con licencia adquirida.
 | `Metrik-Medium.woff2`         | `Metrik`            | 500 | normal |
 | `Metrik-Semibold.woff2`       | `Metrik`            | 600 | normal |
 | `Metrik-Bold.woff2`           | `Metrik`            | 700 | normal |
-| `LightlabDisplay-Regular.woff2` | `LightlabDisplay` | 400–900 (variable) | normal |
-| `LightlabDisplay-Italic.woff2`  | `LightlabDisplay` | 400–900 (variable) | italic |
+| `EpikaSerifExtraCondensed-Regular.woff2` | `EpikaSerifXCond` | 400 | normal |
+| `EpikaSerifExtraCondensed-Medium.woff2`  | `EpikaSerifXCond` | 500 | normal |
+| `EpikaSerifExtraCondensed-Bold.woff2`    | `EpikaSerifXCond` | 700 | normal |
+| `EpikaSerifExtraCondensed-Italic.woff2`  | `EpikaSerifXCond` | 400–700 | italic |
 
 ## Fuentes de origen
 

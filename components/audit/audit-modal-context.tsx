@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
-import { AuditLeadModal } from "./audit-lead-modal"
+import { AuditPopupFullscreen } from "./audit-popup-fullscreen"
 import { initLandingTracking, trackEvent } from "@/lib/tracking"
 import { captureUtmsFromUrl } from "@/lib/utm"
 
@@ -49,7 +49,7 @@ export function AuditModalProvider({ children }: { children: React.ReactNode }) 
   return (
     <AuditModalContext.Provider value={value}>
       {children}
-      <AuditLeadModal isOpen={isOpen} onClose={close} ctaLocation={ctaLocation} />
+      <AuditPopupFullscreen isOpen={isOpen} onClose={close} ctaLocation={ctaLocation} />
     </AuditModalContext.Provider>
   )
 }

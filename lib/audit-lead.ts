@@ -5,13 +5,18 @@
 import { CALENDLY_AUDIT_URL } from "./constants"
 import { getLandingSignals } from "./tracking"
 
+// Tipo de negocio. Conservamos el nombre `ClinicType` por compatibilidad con el
+// API y el esquema almacenado; los valores cubren negocios en general.
 export type ClinicType =
-  | "dental"
-  | "estetica"
-  | "dermatologica"
-  | "medicina_estetica"
-  | "ortodoncia"
-  | "implantes"
+  | "salud_estetica"
+  | "restaurante"
+  | "inmobiliaria"
+  | "automotriz"
+  | "educacion"
+  | "agencia_consultora"
+  | "legal"
+  | "retail"
+  | "servicios"
   | "otro"
 
 export type ConversationVolume = "bajo" | "medio" | "alto"

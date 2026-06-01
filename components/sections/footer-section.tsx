@@ -42,7 +42,7 @@ export function FooterSection() {
               />
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs mb-4 leading-relaxed">
-              Sistema de recuperación de ingresos para clínicas que atienden por WhatsApp.
+              Sistema de recuperación de ingresos para negocios que atienden por WhatsApp.
             </p>
             <div className="flex items-center gap-3">
               <Link
@@ -133,7 +133,7 @@ export function FooterSection() {
 
         <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            © KAIRO. Sistema de recuperación de ingresos para clínicas.
+            © KAIRO. Sistema de recuperación de ingresos para negocios.
           </p>
           <p className="text-xs text-muted-foreground">
             Beta privada activa · <span className="text-primary font-medium">Cupos limitados</span>

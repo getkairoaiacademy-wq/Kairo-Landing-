@@ -98,16 +98,16 @@ export function AuditReminder60s() {
           </button>
 
           <p className="font-heading text-base font-semibold text-foreground pr-6 leading-snug">
-            Tu base podría tener pacientes listos para volver.
+            Tu base podría tener clientes listos para volver.
           </p>
           <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-            Agenda una auditoría gratuita y descubre si tienes cotizaciones, consultas o pacientes
+            Agenda una auditoría gratuita y descubre si tienes cotizaciones, consultas o clientes
             antiguos esperando seguimiento.
           </p>
 
           <div className="flex flex-wrap gap-1.5 mt-3">
             <Pill>Cotizaciones abandonadas</Pill>
-            <Pill>Pacientes antiguos</Pill>
+            <Pill>Clientes antiguos</Pill>
             <Pill>Campañas sugeridas</Pill>
           </div>
 

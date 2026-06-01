@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { FileText, MessageSquare, UserCheck, CalendarX, TrendingUp, Crown } from "lucide-react"
+import { WordReveal } from "@/components/effects/word-reveal"
 
 const detections = [
   {
@@ -12,12 +13,12 @@ const detections = [
   {
     icon: MessageSquare,
     title: "Consultas perdidas",
-    body: "Leads que preguntaron por un tratamiento y quedaron sin seguimiento.",
+    body: "Leads que preguntaron por un servicio o producto y quedaron sin seguimiento.",
   },
   {
     icon: UserCheck,
-    title: "Pacientes antiguos",
-    body: "Personas que ya confiaron en la clínica y podrían volver.",
+    title: "Clientes antiguos",
+    body: "Personas que ya confiaron en tu negocio y podrían volver.",
   },
   {
     icon: CalendarX,
@@ -31,8 +32,8 @@ const detections = [
   },
   {
     icon: Crown,
-    title: "Tratamientos de alto valor",
-    body: "Interesados en implantes, carillas, ortodoncia, estética facial o paquetes premium.",
+    title: "Productos y servicios de alto valor",
+    body: "Interesados en tus servicios premium, paquetes o productos de ticket alto.",
   },
 ]
 
@@ -47,9 +48,36 @@ export function WhatKairoDetectsSection() {
           transition={{ duration: 0.5 }}
           className="text-center mb-14 max-w-3xl mx-auto"
         >
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.6rem] leading-tight tracking-tight text-foreground mb-4">
-            KAIRO encuentra oportunidades que tu equipo{" "}
-            <span className="text-gradient-green">no debería revisar una por una.</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-[2.95rem] mb-4" style={{ paddingBottom: "0.18em" }}>
+            <WordReveal
+              as="span"
+              text="KAIRO encuentra oportunidades"
+              whenInView
+              stagger={0.06}
+              className="block"
+              style={{
+                fontFamily: "var(--font-macro)",
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.0,
+                color: "var(--foreground)",
+              }}
+            />
+            <WordReveal
+              as="span"
+              text="que tu equipo no debería revisar una por una."
+              whenInView
+              stagger={0.06}
+              delay={0.22}
+              className="block text-gradient-green"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontStyle: "italic",
+                fontWeight: 400,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.04,
+              }}
+            />
           </h2>
         </motion.div>
 
@@ -61,7 +89,7 @@ export function WhatKairoDetectsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.45, delay: idx * 0.06 }}
-              className="glass-card rounded-2xl p-6 hover:border-primary/30 hover:translate-y-[-2px] transition-all duration-300 group"
+              className="glass-card card-premium rounded-2xl p-6 group"
             >
               <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
                 <d.icon className="w-5 h-5 text-primary" />

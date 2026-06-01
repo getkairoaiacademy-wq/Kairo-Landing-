@@ -8,37 +8,37 @@ import { Quote } from "lucide-react"
 const reviews = [
   {
     quote: "Nos ayudó a ver cotizaciones que nunca habíamos vuelto a contactar.",
-    name: "Dra. Valeria Rojas",
-    company: "Clínica Dental Aurora",
-    role: "Odontología estética",
+    name: "Valeria Rojas",
+    company: "Inmobiliaria Aurora",
+    role: "Inmobiliaria boutique",
     photo: "https://xsgames.co/randomusers/assets/avatars/female/68.jpg",
   },
   {
     quote: "Antes revisábamos WhatsApp sin prioridad. Ahora sabemos a quién escribir primero.",
-    name: "Dr. Martín Salazar",
-    company: "Sonrisa Lima Studio",
-    role: "Clínica dental",
+    name: "Martín Salazar",
+    company: "Vértice Académico",
+    role: "Academia de formación",
     photo: "https://xsgames.co/randomusers/assets/avatars/male/42.jpg",
   },
   {
-    quote: "KAIRO nos hizo pensar distinto: no faltaban leads, faltaba seguimiento.",
-    name: "Dra. Camila Torres",
+    quote: "KAIRO nos hizo pensar distinto: no faltaban clientes, faltaba seguimiento.",
+    name: "Camila Torres",
     company: "Dermavita Estética",
-    role: "Medicina estética",
+    role: "Centro estético",
     photo: "https://xsgames.co/randomusers/assets/avatars/female/24.jpg",
   },
   {
     quote: "La Base Maestra nos ordenó conversaciones que estaban completamente perdidas.",
-    name: "Dr. Alonso Méndez",
-    company: "Implant Center Perú",
-    role: "Implantes dentales",
+    name: "Alonso Méndez",
+    company: "AutoNorte",
+    role: "Concesionario de autos",
     photo: "https://xsgames.co/randomusers/assets/avatars/male/15.jpg",
   },
   {
     quote: "Lo más valioso fue recibir mensajes sugeridos, no solo una lista de contactos.",
-    name: "Dra. Renata Castillo",
-    company: "Clínica Estética Nova",
-    role: "Estética facial",
+    name: "Renata Castillo",
+    company: "Sazón & Brasa",
+    role: "Restaurante",
     photo: "https://xsgames.co/randomusers/assets/avatars/female/53.jpg",
   },
 ]
@@ -80,7 +80,7 @@ export function ReviewsMarqueeSection() {
   const doubled = [...reviews, ...reviews]
 
   return (
-    <section aria-label="Equipos clínicos usando KAIRO" className="px-6 py-20 lg:py-24 relative">
+    <section aria-label="Negocios usando KAIRO" className="px-6 py-20 lg:py-24 relative">
       <div className="max-w-6xl mx-auto">
         <motion.p
           initial={{ opacity: 0, y: 12 }}
@@ -89,7 +89,7 @@ export function ReviewsMarqueeSection() {
           transition={{ duration: 0.4 }}
           className="text-center text-xs sm:text-sm uppercase tracking-[0.18em] text-muted-foreground mb-10"
         >
-          Equipos clínicos que entienden el valor de recuperar antes de invertir más
+          Negocios que entienden el valor de recuperar antes de invertir más
         </motion.p>
       </div>
 

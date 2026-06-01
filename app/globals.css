@@ -41,17 +41,63 @@
   font-style: normal;
   font-display: swap;
 }
+/* Epika Serif Extra Condensed — display editorial para H1/H2 de alto impacto. */
 @font-face {
-  font-family: "LightlabDisplay";
-  src: url("/fonts/LightlabDisplay-Regular.woff2") format("woff2");
-  font-weight: 400 900;
+  font-family: "EpikaSerifXCond";
+  src: url("/fonts/EpikaSerifExtraCondensed-Regular.woff2") format("woff2");
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "LightlabDisplay";
-  src: url("/fonts/LightlabDisplay-Italic.woff2") format("woff2");
-  font-weight: 400 900;
+  font-family: "EpikaSerifXCond";
+  src: url("/fonts/EpikaSerifExtraCondensed-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "EpikaSerifXCond";
+  src: url("/fonts/EpikaSerifExtraCondensed-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "EpikaSerifXCond";
+  src: url("/fonts/EpikaSerifExtraCondensed-Italic.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ─── Milligram Macro (Zetafonts) — display macro brand identity ───
+   Heavy / Extrabold / Bold weights + italic. Pesos display-only. */
+@font-face {
+  font-family: "MilligramMacro";
+  src: url("/fonts/MilligramMacro-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "MilligramMacro";
+  src: url("/fonts/MilligramMacro-Extrabold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "MilligramMacro";
+  src: url("/fonts/MilligramMacro-Heavy.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "MilligramMacro";
+  src: url("/fonts/MilligramMacro-HeavyItalic.ttf") format("truetype");
+  font-weight: 900;
   font-style: italic;
   font-display: swap;
 }
@@ -124,11 +170,21 @@
 }
 
 @theme inline {
-  --font-body: "Metrik", Arial, Helvetica, system-ui, sans-serif;
-  --font-display: "LightlabDisplay", "Times New Roman", Georgia, serif;
+  /* Sistema tipográfico: Google Fonts self-hosted vía next/font.
+     - Grotesk (Inter Tight) → body / UI / botones / nav / inputs / cards
+     - Editorial (Instrument Serif italic) → H1, H2, frases hero, taglines
+     - Numeric (JetBrains Mono) → métricas, precios, conteos tabulares
+     Mantengo Metrik/EpikaSerifXCond al final de la cadena como upgrade-path
+     opcional cuando se suban los archivos con licencia a /public/fonts/. */
+  --font-body: var(--font-grotesk), "Metrik", "Inter Tight", "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  /* Display ya NO es serif: SaaS premium = un solo sans grotesk (Inter Tight). */
+  --font-display: var(--font-grotesk), "Inter Tight", "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  /* Display headings — clean heavy grotesk (HelpKit/Linear legibility).
+     Milligram Macro retirada: deformaba la jerarquía. Base sans limpia. */
+  --font-macro: var(--font-grotesk), "Inter Tight", "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
   --font-sans: var(--font-body);
-  --font-mono: var(--font-body);
-  --font-heading: var(--font-display);
+  --font-mono: var(--font-numeric), "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  --font-heading: var(--font-macro);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -166,20 +222,29 @@
   body {
     @apply bg-background text-foreground transition-colors duration-300;
     font-family: var(--font-body);
+    font-feature-settings: "ss01" 1, "cv11" 1, "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
-  /* Títulos display por defecto en H1/H2 grandes */
+  /* H1/H2 → grotesk premium sans (Inter Tight) bold por defecto.
+     Estilo SaaS high-end: compacto, potente, tracking apretado. */
   h1, h2 {
-    font-family: var(--font-display);
-    letter-spacing: -0.015em;
+    font-family: var(--font-heading);
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
   }
   h3, h4, h5, h6 {
     font-family: var(--font-body);
-    letter-spacing: -0.01em;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
   }
   button, input, textarea, select, label, nav, li {
     font-family: var(--font-body);
+    letter-spacing: -0.005em;
   }
 }
 
@@ -190,36 +255,202 @@
 
 .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.015em;
-}
-
-.font-heading {
-  font-family: var(--font-display);
-}
-
-/* Estilo "lightlab.": parte italic display + parte sans bold pegada con punto.
-   Aplicar como wrapper en frases donde el efecto del wordmark refuerza el brand. */
-.title-lightlab {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1.05;
-}
-.title-lightlab .lightlab-mark {
   font-style: normal;
   font-weight: 800;
-  font-family: var(--font-body);
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
 }
 
-/* Métricas: Metrik con tabular-nums para que cifras no salten. */
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .kairo-grain { display: none; }
+}
+
+/* Cursor custom — desktop pointer only */
+.kairo-cursor-dot,
+.kairo-cursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 999px;
+  will-change: transform;
+  mix-blend-mode: difference;
+}
+.kairo-cursor-dot {
+  width: 6px; height: 6px;
+  background: #39FF88;
+  transition: transform 0.12s ease-out, opacity 0.2s;
+}
+.kairo-cursor-ring {
+  width: 32px; height: 32px;
+  border: 1px solid rgba(57,255,136,0.6);
+  transition: width 0.25s cubic-bezier(0.16,1,0.3,1),
+              height 0.25s cubic-bezier(0.16,1,0.3,1),
+              border-color 0.25s,
+              opacity 0.2s;
+}
+.kairo-cursor-ring.is-hover {
+  width: 56px; height: 56px;
+  border-color: rgba(57,255,136,1);
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .kairo-cursor-dot,
+  .kairo-cursor-ring { display: none; }
+}
+
+/* Scroll progress bar */
+.kairo-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, #39FF88 0%, #00B86B 100%);
+  z-index: 80;
+  pointer-events: none;
+  box-shadow: 0 0 12px rgba(57,255,136,0.5);
+  transition: width 80ms linear;
+}
+
+/* Scroll reveals */
+.rv {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1),
+              transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  will-change: opacity, transform;
+}
+.rv.is-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .rv { opacity: 1; transform: none; transition: none; }
+}
+
+/* Métricas: numeric con tabular */
 .font-mono,
 .font-num {
-  font-family: var(--font-body);
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1, "lnum" 1;
+  letter-spacing: -0.02em;
 }
+
+/* ───── Magnetic CTA shimmer ───── */
+.magnetic-btn {
+  overflow: hidden;
+  isolation: isolate;
+}
+.magnetic-shimmer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: inherit;
+  mix-blend-mode: overlay;
+  z-index: 1;
+}
+.magnetic-btn:hover .magnetic-shimmer {
+  transform: translateX(120%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .magnetic-shimmer { display: none; }
+}
+
+/* ───── Premium card hover (cinematográfico) ───── */
+.card-premium {
+  position: relative;
+  isolation: isolate;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s ease;
+  will-change: transform;
+}
+.card-premium::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(57, 255, 136, 0) 0%,
+    rgba(57, 255, 136, 0.55) 50%,
+    rgba(57, 255, 136, 0) 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+.card-premium:hover {
+  transform: translate3d(0, -4px, 0);
+  box-shadow:
+    0 20px 50px -22px rgba(16, 40, 28, 0.18),
+    0 6px 18px -10px rgba(0, 153, 89, 0.14),
+    0 1px 0 rgba(255, 255, 255, 0.7) inset;
+}
+.dark .card-premium:hover {
+  box-shadow:
+    0 24px 60px -20px rgba(0, 0, 0, 0.55),
+    0 8px 24px -8px rgba(57, 255, 136, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+.card-premium:hover::before {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-premium { transition: none; }
+  .card-premium:hover { transform: none; }
+}
+
+/* ───── Mask reveal por líneas (clip-path) ───── */
+.mask-reveal {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mask-reveal.is-in {
+  clip-path: inset(0 0 0 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mask-reveal { clip-path: none; transition: none; }
+}
+
+/* ───── Intro curtain (cortina cinematográfica) ───── */
+@keyframes kairo-intro-curtain {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(0, -100%, 0); }
+}
+.kairo-intro-curtain {
+  animation: kairo-intro-curtain 0.95s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+}
+
+/* ───── Navbar premium underline ───── */
+.nav-link {
+  position: relative;
+  transition: color 0.3s ease;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -6px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-link:hover::after { transform: scaleX(1); }
 
 /* Glass Card Effect */
 .glass-card {
@@ -273,8 +504,17 @@
   50% { box-shadow: 0 0 60px rgba(57,255,136,0.25), 0 0 100px rgba(57,255,136,0.10); }
 }
 
-/* Text Gradient */
+/* Text Gradient — legible green per mode.
+   Light: richer greens for contrast on white (HelpKit-style highlight word).
+   Dark: neon brand green. */
 .text-gradient-green {
+  background: linear-gradient(135deg, #00C46B 0%, #009959 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dark .text-gradient-green {
   background: linear-gradient(135deg, #39FF88 0%, #00B86B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -292,6 +532,42 @@ html::-webkit-scrollbar {
 html {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* HelpKit-style soft hero gradient — pastel blooms on off-white (light),
+   subtle green glow on near-black (dark). */
+.hero-gradient {
+  background:
+    radial-gradient(60% 50% at 50% 8%, rgba(57, 196, 140, 0.16) 0%, transparent 60%),
+    radial-gradient(45% 40% at 82% 38%, rgba(120, 205, 255, 0.14) 0%, transparent 65%),
+    radial-gradient(45% 40% at 16% 42%, rgba(170, 240, 150, 0.14) 0%, transparent 65%);
+}
+.dark .hero-gradient {
+  background:
+    radial-gradient(60% 50% at 50% 10%, rgba(57, 255, 136, 0.10) 0%, transparent 60%),
+    radial-gradient(50% 45% at 80% 40%, rgba(57, 255, 136, 0.05) 0%, transparent 65%);
+}
+
+/* Demo loop — viewport con tinte suave para que las tarjetas blancas resalten */
+.demo-viewport {
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(0, 153, 89, 0.07) 0%, transparent 55%),
+    linear-gradient(180deg, #EEF4F1 0%, #E6EEEA 100%);
+}
+.dark .demo-viewport {
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(57, 255, 136, 0.08) 0%, transparent 55%),
+    linear-gradient(180deg, #0A1310 0%, #060B09 100%);
+}
+.demo-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(16, 40, 28, 0.08);
+  box-shadow: 0 1px 2px rgba(16, 40, 28, 0.06), 0 4px 12px -6px rgba(16, 40, 28, 0.10);
+}
+.dark .demo-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: none;
 }
 
 /* Radial gradient background */

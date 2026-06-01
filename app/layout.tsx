@@ -1,33 +1,60 @@
 import type React from "react"
 import type { Metadata } from "next"
+import { Inter_Tight, Instrument_Serif, JetBrains_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { LenisProvider } from "@/components/providers/lenis-provider"
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { AuditModalProvider } from "@/components/audit/audit-modal-context"
 import { LandingIntroSequence } from "@/components/intro/landing-intro-sequence"
+import { CustomCursor } from "@/components/effects/custom-cursor"
+import { GrainOverlay } from "@/components/effects/grain-overlay"
+import { ScrollProgress } from "@/components/effects/scroll-progress"
+import { RevealOnScroll } from "@/components/effects/reveal-on-scroll"
 import "./globals.css"
 
 const SITE_URL = "https://getkairo.lat"
 
+const interTight = Inter_Tight({
+  subsets: ["latin", "latin-ext"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-grotesk",
+})
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin", "latin-ext"],
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
+  variable: "--font-editorial",
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+  variable: "--font-numeric",
+})
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "KAIRO | Recupera ingresos ocultos en tu clínica",
+    default: "KAIRO | Encuentra ingresos ocultos en tu base de clientes",
     template: "%s | KAIRO",
   },
   description:
-    "KAIRO ayuda a clínicas que atienden por WhatsApp a detectar consultas perdidas, cotizaciones pendientes y pacientes antiguos con potencial de volver. Agenda una auditoría gratuita.",
+    "KAIRO ayuda a negocios que venden por WhatsApp a detectar consultas perdidas, cotizaciones sin cierre y clientes inactivos con potencial de volver. Agenda una auditoría gratuita de ingresos ocultos.",
   keywords: [
     "KAIRO",
     "recuperación de ingresos",
-    "clínica dental",
-    "WhatsApp clínica",
-    "pacientes perdidos",
+    "ingresos ocultos",
+    "ventas por WhatsApp",
+    "clientes perdidos",
     "auditoría de ingresos",
-    "CRM clínica",
-    "reactivación de pacientes",
-    "marketing dental",
-    "clínica estética",
+    "reactivación de clientes",
+    "cotizaciones sin cierre",
+    "seguimiento de leads",
+    "CRM WhatsApp",
   ],
   authors: [{ name: "KAIRO" }],
   creator: "KAIRO",
@@ -43,23 +70,23 @@ export const metadata: Metadata = {
     locale: "es_LA",
     url: SITE_URL,
     siteName: "KAIRO",
-    title: "KAIRO | Recupera ingresos ocultos en tu clínica",
+    title: "KAIRO | Encuentra ingresos ocultos en tu base de clientes",
     description:
-      "Detecta consultas perdidas, cotizaciones pendientes y pacientes antiguos con potencial de volver. Auditoría gratuita.",
+      "Detecta consultas perdidas, cotizaciones sin cierre y clientes inactivos con potencial de volver. Auditoría gratuita.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "KAIRO — Sistema de recuperación de ingresos para clínicas",
+        alt: "KAIRO — Sistema de recuperación de ingresos para negocios que venden por WhatsApp",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "KAIRO | Recupera ingresos ocultos en tu clínica",
+    title: "KAIRO | Encuentra ingresos ocultos en tu base de clientes",
     description:
-      "Detecta consultas perdidas y pacientes con potencial de volver. Auditoría gratuita para tu clínica.",
+      "Detecta consultas perdidas y clientes con potencial de volver. Auditoría gratuita para tu negocio.",
     images: ["/og-image.png"],
   },
   icons: {
@@ -77,19 +104,27 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es" className="dark" suppressHydrationWarning>
+    <html
+      lang="es"
+      className={`light ${interTight.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem('kairo-theme')||'dark',r=t==='system'?window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light':t;document.documentElement.classList.add(r);document.body.style.backgroundColor=r==='dark'?'#050807':'#F8FAF9'}catch(e){}`,
+            __html: `try{var t=localStorage.getItem('kairo-theme-v2')||'light',r=t==='system'?window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light':t;document.documentElement.classList.add(r);document.body.style.backgroundColor=r==='dark'?'#050807':'#F8FAF9'}catch(e){}`,
           }}
         />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
-        <ThemeProvider defaultTheme="dark" storageKey="kairo-theme">
+        <ThemeProvider defaultTheme="light" storageKey="kairo-theme-v2">
           <AuditModalProvider>
             <LenisProvider>
               <LandingIntroSequence />
+              <ScrollProgress />
+              <GrainOverlay />
+              <CustomCursor />
+              <RevealOnScroll />
               {children}
             </LenisProvider>
           </AuditModalProvider>

@@ -15,15 +15,15 @@ interface Props {
 
 const DEFAULT_BENEFITS = [
   "Cotizaciones abandonadas",
-  "Pacientes antiguos recuperables",
+  "Clientes antiguos recuperables",
   "Campañas recomendadas",
   "Mensajes sugeridos",
 ]
 
 export function ContextualAuditCta({
   ctaLocation,
-  title = "¿Quieres ver esto con los datos de tu clínica?",
-  body = "En la auditoría revisamos si tu clínica tiene oportunidades recuperables y te mostramos cómo KAIRO las convierte en campañas.",
+  title = "¿Quieres ver esto con los datos de tu negocio?",
+  body = "En la auditoría revisamos si tu negocio tiene oportunidades recuperables y te mostramos cómo KAIRO las convierte en campañas.",
   buttonLabel = "Agendar auditoría gratuita",
   benefits = DEFAULT_BENEFITS,
   className = "",

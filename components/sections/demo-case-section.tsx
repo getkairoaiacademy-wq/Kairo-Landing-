@@ -2,37 +2,38 @@
 
 import { motion } from "framer-motion"
 import { MessageCircle, ArrowRight } from "lucide-react"
+import { WordReveal } from "@/components/effects/word-reveal"
 
 const cases = [
   {
     scenario:
-      "Paciente preguntó por diseño de sonrisa, recibió precio aproximado, dijo que lo pensaría y nunca fue contactado.",
-    service: "Diseño de sonrisa",
+      "Cliente pidió cotización de un departamento, recibió el precio, dijo que lo pensaría y nunca fue contactado de nuevo.",
+    service: "Cotización inmobiliaria",
     temperature: "Tibio",
     objection: "Precio / decisión pendiente",
     nextStep: "Seguimiento consultivo",
     message:
-      "Hola, Lucía. Vi que habías consultado por diseño de sonrisa. Si todavía estás evaluándolo, podemos ayudarte a comparar opciones y resolver dudas antes de decidir. ¿Te paso disponibilidad para una evaluación?",
+      "Hola, Lucía. Vi que habías consultado por el departamento en San Isidro. Si todavía lo estás evaluando, puedo enviarte opciones de financiamiento y resolver dudas antes de decidir. ¿Te paso disponibilidad para una visita?",
   },
   {
     scenario:
-      "Lead pidió cotización de ortodoncia invisible hace 3 semanas, recibió respuesta y la conversación quedó abierta sin cierre.",
-    service: "Ortodoncia invisible",
+      "Lead pidió presupuesto de un programa hace 3 semanas, recibió respuesta y la conversación quedó abierta sin cierre.",
+    service: "Programa / matrícula",
     temperature: "Caliente",
-    objection: "Comparando con otra clínica",
+    objection: "Comparando con otra opción",
     nextStep: "Reactivación con caso comparativo",
     message:
-      "Hola, Andrés. Hace unas semanas conversamos sobre ortodoncia invisible. ¿Avanzaste con alguna decisión? Si aún sigues evaluando, podría enviarte un par de casos similares al tuyo para que veas resultados reales.",
+      "Hola, Andrés. Hace unas semanas conversamos sobre el programa. ¿Avanzaste con alguna decisión? Si aún sigues evaluando, puedo enviarte un par de casos de alumnos similares para que veas resultados reales.",
   },
   {
     scenario:
-      "Paciente antiguo, hace 9 meses se hizo una limpieza. Nunca recibió recordatorio de seguimiento ni propuesta de tratamiento complementario.",
-    service: "Reactivación paciente antiguo",
+      "Cliente antiguo, hace 9 meses hizo su última compra. Nunca recibió recordatorio de seguimiento ni una nueva propuesta.",
+    service: "Reactivación cliente antiguo",
     temperature: "Frío warm-up",
     objection: "Sin contacto reciente",
-    nextStep: "Mensaje de bienvenida + chequeo",
+    nextStep: "Mensaje de bienvenida + oferta",
     message:
-      "Hola, Rosa. Ya pasó un tiempo desde tu última limpieza. ¿Te gustaría coordinar un chequeo rápido este mes? Podemos darte prioridad de agenda como paciente recurrente.",
+      "Hola, Rosa. Ya pasó un tiempo desde tu última compra con nosotros. Tenemos algo que creo que te va a interesar. ¿Te gustaría que te dé prioridad como cliente recurrente este mes?",
   },
 ]
 
@@ -47,12 +48,39 @@ export function DemoCaseSection() {
           transition={{ duration: 0.5 }}
           className="text-center mb-14 max-w-3xl mx-auto"
         >
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.6rem] leading-tight tracking-tight text-foreground mb-4">
-            Así se ve una oportunidad recuperable{" "}
-            <span className="text-gradient-green">dentro de KAIRO.</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-[2.95rem] mb-4" style={{ paddingBottom: "0.18em" }}>
+            <WordReveal
+              as="span"
+              text="Así se ve una oportunidad recuperable"
+              whenInView
+              stagger={0.06}
+              className="block"
+              style={{
+                fontFamily: "var(--font-macro)",
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.0,
+                color: "var(--foreground)",
+              }}
+            />
+            <WordReveal
+              as="span"
+              text="dentro de KAIRO."
+              whenInView
+              stagger={0.08}
+              delay={0.24}
+              className="block text-gradient-green"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontStyle: "italic",
+                fontWeight: 400,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.04,
+              }}
+            />
           </h2>
           <p className="text-muted-foreground text-base leading-relaxed">
-            Tres ejemplos del tipo de casos que aparecen cada semana en una clínica activa.
+            Tres ejemplos del tipo de casos que aparecen cada semana en un negocio activo.
           </p>
         </motion.div>
 
@@ -64,7 +92,7 @@ export function DemoCaseSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="glass-card rounded-2xl p-6 flex flex-col"
+              className="glass-card card-premium rounded-2xl p-6 flex flex-col"
             >
               <p className="text-xs text-muted-foreground leading-relaxed mb-5 italic border-l-2 border-primary/40 pl-3">
                 "{c.scenario}"
@@ -97,7 +125,7 @@ export function DemoCaseSection() {
           transition={{ duration: 0.4, delay: 0.2 }}
           className="text-xs text-muted-foreground text-center mt-8 max-w-xl mx-auto"
         >
-          Casos demo basados en escenarios reales recurrentes en clínicas con tratamientos de ticket
+          Casos demo basados en escenarios reales recurrentes en negocios con ventas de ticket
           medio a alto. Los nombres son ficticios.
         </motion.p>
       </div>

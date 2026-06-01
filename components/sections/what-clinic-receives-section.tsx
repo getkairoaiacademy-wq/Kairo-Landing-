@@ -90,8 +90,8 @@ export function WhatClinicReceivesSection() {
             </div>
 
             <div className="space-y-3 mb-5">
-              <Row label="Servicio de interés" value="Implantes dentales" />
-              <Row label="Objeción detectada" value="Comparando precio con otra clínica" />
+              <Row label="Servicio de interés" value="Servicio de alto valor" />
+              <Row label="Objeción detectada" value="Comparando precio con otra opción" />
               <Row label="Potencial estimado" value="S/ 4,800" highlight />
               <Row label="Próximo paso" value="Seguimiento consultivo en 24h" />
             </div>
@@ -104,7 +104,7 @@ export function WhatClinicReceivesSection() {
                 </span>
               </div>
               <p className="text-xs text-foreground/90 leading-relaxed">
-                Hola, Valeria. Vi que estabas evaluando opciones de implante. ¿Te ayudamos a comparar lo
+                Hola, Valeria. Vi que estabas evaluando las opciones. ¿Te ayudamos a comparar lo
                 que recibiste y resolver dudas antes de decidir?
               </p>
               <div className="flex items-center gap-2 mt-3">
