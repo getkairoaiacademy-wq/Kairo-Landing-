@@ -9,8 +9,6 @@ import {
   saveAuditLead,
   type AuditLeadInput,
   type CalPrefill,
-  type ClinicType,
-  type ConversationVolume,
 } from "@/lib/audit-lead"
 import { trackEvent } from "@/lib/tracking"
 import { CalEmbed } from "./cal-embed"
@@ -23,12 +21,9 @@ interface Props {
 
 type FormState = {
   fullName: string
-  clinicName: string
-  contact: string
-  clinicType: ClinicType | ""
-  usesWhatsapp: "" | "si" | "no"
-  monthlyConversationVolume: ConversationVolume | ""
-  mainProblem: string
+  companyName: string
+  phone: string
+  email: string
   privacyAccepted: boolean
   termsAccepted: boolean
   marketingConsent: boolean
@@ -36,12 +31,9 @@ type FormState = {
 
 const initialState: FormState = {
   fullName: "",
-  clinicName: "",
-  contact: "",
-  clinicType: "",
-  usesWhatsapp: "",
-  monthlyConversationVolume: "",
-  mainProblem: "",
+  companyName: "",
+  phone: "",
+  email: "",
   privacyAccepted: false,
   termsAccepted: false,
   marketingConsent: false,
@@ -49,42 +41,19 @@ const initialState: FormState = {
 
 type FieldError = Partial<Record<keyof FormState, string>>
 
-const CLINIC_OPTIONS: { value: ClinicType; label: string }[] = [
-  { value: "salud_estetica", label: "Salud, clínica o estética" },
-  { value: "restaurante", label: "Restaurante o gastronomía" },
-  { value: "inmobiliaria", label: "Inmobiliaria" },
-  { value: "automotriz", label: "Concesionario / automotriz" },
-  { value: "educacion", label: "Academia o educación" },
-  { value: "agencia_consultora", label: "Agencia o consultora" },
-  { value: "legal", label: "Estudio jurídico" },
-  { value: "retail", label: "Tienda o retail" },
-  { value: "servicios", label: "Empresa de servicios" },
-  { value: "otro", label: "Otro" },
-]
-
-const VOLUME_OPTIONS: { value: ConversationVolume; label: string }[] = [
-  { value: "bajo", label: "Bajo" },
-  { value: "medio", label: "Medio" },
-  { value: "alto", label: "Alto" },
-]
+const emailRe = /\S+@\S+\.\S+/
+const phoneRe = /^[+\d\s().-]{7,}$/
 
 function validate(state: FormState): FieldError {
   const errors: FieldError = {}
-  if (!state.fullName.trim()) errors.fullName = "Tu nombre es requerido."
-  if (!state.clinicName.trim()) errors.clinicName = "Nombre del negocio requerido."
-  if (!state.contact.trim()) {
-    errors.contact = "Email o WhatsApp requerido."
-  } else {
-    const v = state.contact.trim()
-    const isEmail = /\S+@\S+\.\S+/.test(v)
-    const isPhone = /^[+\d\s().-]{7,}$/.test(v)
-    if (!isEmail && !isPhone) errors.contact = "Ingresa un email o número válido."
-  }
-  if (!state.clinicType) errors.clinicType = "Selecciona el tipo de negocio."
-  if (!state.usesWhatsapp) errors.usesWhatsapp = "Indica si atienden por WhatsApp."
-  if (!state.monthlyConversationVolume) errors.monthlyConversationVolume = "Selecciona un volumen."
-  if (!state.privacyAccepted) (errors as FieldError & { privacyAccepted?: string }).privacyAccepted = "Debes aceptar la Política de Privacidad."
-  if (!state.termsAccepted) (errors as FieldError & { termsAccepted?: string }).termsAccepted = "Debes aceptar los Términos y Condiciones."
+  if (!state.fullName.trim() || state.fullName.trim().length < 2) errors.fullName = "Tu nombre es requerido."
+  if (!state.companyName.trim() || state.companyName.trim().length < 2) errors.companyName = "Nombre de la empresa requerido."
+  if (!state.phone.trim()) errors.phone = "Tu WhatsApp o número es requerido."
+  else if (!phoneRe.test(state.phone.trim())) errors.phone = "Ingresa un número válido."
+  if (!state.email.trim()) errors.email = "Correo requerido."
+  else if (!emailRe.test(state.email.trim())) errors.email = "Ingresa un correo válido."
+  if (!state.privacyAccepted) errors.privacyAccepted = "Debes aceptar la Política de Privacidad."
+  if (!state.termsAccepted) errors.termsAccepted = "Debes aceptar los Términos y Condiciones."
   return errors
 }
 
@@ -100,22 +69,18 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
   const firstFieldRef = useRef<HTMLInputElement>(null)
   const lastActiveElement = useRef<HTMLElement | null>(null)
 
-  // Reset on open.
   useEffect(() => {
     if (isOpen) {
       setStep("form")
       setErrors({})
       lastActiveElement.current = document.activeElement as HTMLElement | null
-      // Focus first field after mount.
       const t = setTimeout(() => firstFieldRef.current?.focus(), 60)
       return () => clearTimeout(t)
     } else {
-      // Restore focus on close.
       lastActiveElement.current?.focus?.()
     }
   }, [isOpen])
 
-  // Body scroll lock + ESC + focus trap.
   useEffect(() => {
     if (!isOpen) return
     const previousOverflow = document.body.style.overflow
@@ -161,7 +126,6 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
     const errs = validate(state)
     if (Object.keys(errs).length > 0) {
       setErrors(errs)
-      // Focus first invalid input for keyboard users.
       const firstKey = Object.keys(errs)[0]
       const node = dialogRef.current?.querySelector<HTMLElement>(`[data-field="${firstKey}"]`)
       node?.focus()
@@ -171,12 +135,9 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
     setSubmitting(true)
     const input: AuditLeadInput = {
       fullName: state.fullName.trim(),
-      clinicName: state.clinicName.trim(),
-      contact: state.contact.trim(),
-      clinicType: state.clinicType as ClinicType,
-      usesWhatsapp: state.usesWhatsapp === "si",
-      monthlyConversationVolume: state.monthlyConversationVolume as ConversationVolume,
-      mainProblem: state.mainProblem.trim() || undefined,
+      companyName: state.companyName.trim(),
+      email: state.email.trim(),
+      phone: state.phone.trim(),
       ctaLocation,
       privacyAccepted: state.privacyAccepted,
       termsAccepted: state.termsAccepted,
@@ -197,7 +158,6 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
 
     const result = await saveAuditLead(input)
     if (!result.ok && process.env.NODE_ENV !== "production") {
-      // Dev-only: never surfaced to user; never blocks scheduling.
       trackEvent("audit_lead_save_failed", { reason: result.error, ctaLocation })
     } else if (result.ok) {
       trackEvent("audit_lead_submitted", { ctaLocation })
@@ -213,8 +173,8 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
     () =>
       step === "form"
         ? {
-            title: "Prepara tu auditoría gratuita",
-            desc: "Completa estos datos para que la llamada sea más útil y podamos mostrarte oportunidades cercanas al tipo de negocio que tienes.",
+            title: "Agenda tu demo de KAIRO",
+            desc: "Te pedimos estos datos para coordinar tu demo. No hacemos spam.",
           }
         : {
             title: "Listo. Elige tu horario.",
@@ -234,7 +194,6 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
           transition={{ duration: 0.18 }}
           aria-hidden={false}
         >
-          {/* Backdrop */}
           <button
             type="button"
             aria-label="Cerrar"
@@ -283,7 +242,7 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
                   <input id="audit-website" name="_website" type="text" tabIndex={-1} autoComplete="off" />
                 </div>
 
-                <Field label="Nombre completo" error={errors.fullName} htmlFor="audit-fullName">
+                <Field label="Nombre" error={errors.fullName} htmlFor="audit-fullName">
                   <input
                     ref={firstFieldRef}
                     id="audit-fullName"
@@ -293,120 +252,48 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
                     value={state.fullName}
                     onChange={(e) => update("fullName", e.target.value)}
                     className={inputClass(!!errors.fullName)}
-                    placeholder="Valeria Rojas"
+                    placeholder="Tu nombre"
                   />
                 </Field>
 
-                <Field label="Nombre del negocio" error={errors.clinicName} htmlFor="audit-clinic">
+                <Field label="Nombre de la empresa" error={errors.companyName} htmlFor="audit-company">
                   <input
-                    id="audit-clinic"
-                    data-field="clinicName"
+                    id="audit-company"
+                    data-field="companyName"
                     type="text"
                     autoComplete="organization"
-                    value={state.clinicName}
-                    onChange={(e) => update("clinicName", e.target.value)}
-                    className={inputClass(!!errors.clinicName)}
-                    placeholder="Ej. Estudio Aurora"
+                    value={state.companyName}
+                    onChange={(e) => update("companyName", e.target.value)}
+                    className={inputClass(!!errors.companyName)}
+                    placeholder="Nombre de tu clínica o empresa"
                   />
                 </Field>
 
-                <Field
-                  label="Email o WhatsApp"
-                  error={errors.contact}
-                  htmlFor="audit-contact"
-                  hint="Donde podamos coordinar la llamada."
-                >
+                <Field label="WhatsApp o número de contacto" error={errors.phone} htmlFor="audit-phone">
                   <input
-                    id="audit-contact"
-                    data-field="contact"
-                    type="text"
+                    id="audit-phone"
+                    data-field="phone"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    value={state.phone}
+                    onChange={(e) => update("phone", e.target.value)}
+                    className={inputClass(!!errors.phone)}
+                    placeholder="Ej. +51 999 999 999"
+                  />
+                </Field>
+
+                <Field label="Correo" error={errors.email} htmlFor="audit-email">
+                  <input
+                    id="audit-email"
+                    data-field="email"
+                    type="email"
                     inputMode="email"
                     autoComplete="email"
-                    value={state.contact}
-                    onChange={(e) => update("contact", e.target.value)}
-                    className={inputClass(!!errors.contact)}
-                    placeholder="valeria@negocio.com o +51 999 999 999"
-                  />
-                </Field>
-
-                <Field
-                  label="Tipo de negocio"
-                  error={errors.clinicType}
-                  htmlFor="audit-clinicType"
-                >
-                  <select
-                    id="audit-clinicType"
-                    data-field="clinicType"
-                    value={state.clinicType}
-                    onChange={(e) => update("clinicType", e.target.value as ClinicType)}
-                    className={inputClass(!!errors.clinicType)}
-                  >
-                    <option value="" disabled>
-                      Selecciona…
-                    </option>
-                    {CLINIC_OPTIONS.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-
-                <Field label="¿Atienden por WhatsApp?" error={errors.usesWhatsapp}>
-                  <div className="grid grid-cols-2 gap-2" data-field="usesWhatsapp" tabIndex={-1}>
-                    {(["si", "no"] as const).map((v) => (
-                      <button
-                        key={v}
-                        type="button"
-                        onClick={() => update("usesWhatsapp", v)}
-                        aria-pressed={state.usesWhatsapp === v}
-                        className={chipClass(state.usesWhatsapp === v, !!errors.usesWhatsapp)}
-                      >
-                        {v === "si" ? "Sí" : "No"}
-                      </button>
-                    ))}
-                  </div>
-                </Field>
-
-                <Field
-                  label="Volumen mensual de conversaciones"
-                  error={errors.monthlyConversationVolume}
-                >
-                  <div
-                    className="grid grid-cols-3 gap-2"
-                    data-field="monthlyConversationVolume"
-                    tabIndex={-1}
-                  >
-                    {VOLUME_OPTIONS.map((o) => (
-                      <button
-                        key={o.value}
-                        type="button"
-                        onClick={() => update("monthlyConversationVolume", o.value)}
-                        aria-pressed={state.monthlyConversationVolume === o.value}
-                        className={chipClass(
-                          state.monthlyConversationVolume === o.value,
-                          !!errors.monthlyConversationVolume,
-                        )}
-                      >
-                        {o.label}
-                      </button>
-                    ))}
-                  </div>
-                </Field>
-
-                <Field
-                  label="Principal problema actual (opcional)"
-                  htmlFor="audit-problem"
-                  hint="Una línea es suficiente. Te ayudará a preparar mejor la llamada."
-                >
-                  <textarea
-                    id="audit-problem"
-                    value={state.mainProblem}
-                    onChange={(e) => update("mainProblem", e.target.value)}
-                    rows={2}
-                    maxLength={240}
-                    className={inputClass(false) + " resize-none"}
-                    placeholder="Ej. Muchas cotizaciones que nunca cierran."
+                    value={state.email}
+                    onChange={(e) => update("email", e.target.value)}
+                    className={inputClass(!!errors.email)}
+                    placeholder="correo@empresa.com"
                   />
                 </Field>
 
@@ -416,7 +303,7 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
                     id="audit-consent-privacy"
                     checked={state.privacyAccepted}
                     onChange={(v) => update("privacyAccepted", v)}
-                    error={(errors as FieldError & { privacyAccepted?: string }).privacyAccepted}
+                    error={errors.privacyAccepted}
                   >
                     Acepto la{" "}
                     <a href="/politica-de-privacidad" target="_blank" rel="noopener noreferrer" className="underline text-primary hover:opacity-80">
@@ -428,7 +315,7 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
                     id="audit-consent-terms"
                     checked={state.termsAccepted}
                     onChange={(v) => update("termsAccepted", v)}
-                    error={(errors as FieldError & { termsAccepted?: string }).termsAccepted}
+                    error={errors.termsAccepted}
                   >
                     Acepto los{" "}
                     <a href="/terminos-y-condiciones" target="_blank" rel="noopener noreferrer" className="underline text-primary hover:opacity-80">
@@ -450,15 +337,15 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
                   disabled={submitting}
                   className="group mt-2 inline-flex w-full items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:opacity-95 transition-all disabled:opacity-70 disabled:cursor-not-allowed glow-green-sm"
                 >
-                  {submitting ? "Preparando…" : "Continuar a calendario"}
+                  {submitting ? "Preparando…" : "Agendar demo"}
                   {!submitting && (
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                   )}
                 </button>
 
                 <p className="text-[11px] text-muted-foreground/80 text-center leading-relaxed">
-                  No es un registro. No necesitas crear cuenta. Solo usamos estos datos para preparar
-                  mejor tu auditoría.
+                  No es un registro. No necesitas crear cuenta. Solo usamos estos datos para coordinar
+                  tu demo.
                 </p>
               </form>
             ) : (
@@ -466,7 +353,7 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
                 <div className="flex items-start gap-3 glass-card-green rounded-xl p-3">
                   <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 shrink-0" />
                   <p className="text-xs text-foreground/90 leading-relaxed">
-                    Datos guardados. Elige un horario para tu demo directamente debajo.
+                    Listo. Recibimos tus datos. Ahora elige una fecha para tu demo.
                   </p>
                 </div>
 
@@ -562,14 +449,4 @@ function ConsentCheckbox({
       )}
     </div>
   )
-}
-
-function chipClass(active: boolean, hasError: boolean) {
-  return [
-    "px-3 py-2.5 rounded-xl text-sm border transition-colors",
-    active
-      ? "bg-primary/15 text-primary border-primary/40"
-      : "bg-background/60 text-foreground/90 border-border/70 hover:border-primary/40",
-    hasError && !active ? "border-red-500/40" : "",
-  ].join(" ")
 }

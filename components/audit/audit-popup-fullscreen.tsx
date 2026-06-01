@@ -41,10 +41,12 @@ function storeSet(key: string, value: string) {
 
 const easeOut = [0.16, 1, 0.3, 1] as const
 const emailRe = /\S+@\S+\.\S+/
+const phoneRe = /^[+\d\s().-]{7,}$/
 
 type FormState = {
-  clinicName: string
   fullName: string
+  companyName: string
+  phone: string
   email: string
   privacyAccepted: boolean
   termsAccepted: boolean
@@ -68,8 +70,9 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
   const reduce = useReducedMotion()
   const [autoOpen, setAutoOpen] = useState(false)
   const [state, setState] = useState<FormState>({
-    clinicName: "",
     fullName: "",
+    companyName: "",
+    phone: "",
     email: "",
     privacyAccepted: false,
     termsAccepted: false,
@@ -175,8 +178,10 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
 
   function validate(s: FormState): FieldError {
     const e: FieldError = {}
-    if (!s.clinicName.trim()) e.clinicName = "Escribe el nombre de tu negocio."
     if (!s.fullName.trim()) e.fullName = "¿Cómo te llamas?"
+    if (!s.companyName.trim()) e.companyName = "Escribe el nombre de tu empresa."
+    if (!s.phone.trim()) e.phone = "Déjanos un WhatsApp o número de contacto."
+    else if (!phoneRe.test(s.phone.trim())) e.phone = "Revisa el número antes de continuar."
     if (!s.email.trim()) e.email = "Déjanos un correo para coordinar."
     else if (!emailRe.test(s.email.trim())) e.email = "Revisa el correo antes de continuar."
     if (!s.privacyAccepted) e.privacyAccepted = "Acepta la Política de Privacidad."
@@ -198,11 +203,9 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
     setSaveFailed(false)
     const input: AuditLeadInput = {
       fullName: state.fullName.trim(),
-      clinicName: state.clinicName.trim(),
-      contact: state.email.trim(),
-      clinicType: "otro",
-      usesWhatsapp: true,
-      monthlyConversationVolume: "medio",
+      companyName: state.companyName.trim(),
+      email: state.email.trim(),
+      phone: state.phone.trim(),
       ctaLocation: location,
       privacyAccepted: state.privacyAccepted,
       termsAccepted: state.termsAccepted,
@@ -318,10 +321,10 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
                 id={titleId}
                 className="font-heading not-italic mt-4 text-2xl sm:text-[1.9rem] font-extrabold leading-[1.08] tracking-tight text-white"
               >
-                ¿Quieres ver cuánto dinero podría estar <span style={{ color: "#39FF88" }}>dormido</span> en tu clínica?
+                Agenda tu <span style={{ color: "#39FF88" }}>demo</span> de KAIRO
               </h2>
               <p id={descId} className="mt-2.5 text-sm leading-relaxed text-white/55">
-                KAIRO analiza contactos, conversaciones y cotizaciones pendientes para detectar oportunidades de recuperación que tu equipo puede accionar por WhatsApp.
+                Te pedimos estos datos para coordinar tu demo. No hacemos spam.
               </p>
 
               <form onSubmit={submit} noValidate className="mt-6 space-y-3.5">
@@ -330,22 +333,10 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
                   <label htmlFor="pop-website">Website</label>
                   <input id="pop-website" name="_website" type="text" tabIndex={-1} autoComplete="off" />
                 </div>
-                <PopupField label="Nombre del negocio" error={errors.clinicName} htmlFor="pop-clinic">
+
+                <PopupField label="Nombre" error={errors.fullName} htmlFor="pop-name">
                   <input
                     ref={firstFieldRef}
-                    id="pop-clinic"
-                    data-field="clinicName"
-                    type="text"
-                    autoComplete="organization"
-                    value={state.clinicName}
-                    onChange={(e) => update("clinicName", e.target.value)}
-                    className={popInput(!!errors.clinicName)}
-                    placeholder="Ej. Estudio Aurora"
-                  />
-                </PopupField>
-
-                <PopupField label="Tu nombre" error={errors.fullName} htmlFor="pop-name">
-                  <input
                     id="pop-name"
                     data-field="fullName"
                     type="text"
@@ -353,7 +344,34 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
                     value={state.fullName}
                     onChange={(e) => update("fullName", e.target.value)}
                     className={popInput(!!errors.fullName)}
-                    placeholder="Valeria Rojas"
+                    placeholder="Tu nombre"
+                  />
+                </PopupField>
+
+                <PopupField label="Nombre de la empresa" error={errors.companyName} htmlFor="pop-company">
+                  <input
+                    id="pop-company"
+                    data-field="companyName"
+                    type="text"
+                    autoComplete="organization"
+                    value={state.companyName}
+                    onChange={(e) => update("companyName", e.target.value)}
+                    className={popInput(!!errors.companyName)}
+                    placeholder="Nombre de tu clínica o empresa"
+                  />
+                </PopupField>
+
+                <PopupField label="WhatsApp o número de contacto" error={errors.phone} htmlFor="pop-phone">
+                  <input
+                    id="pop-phone"
+                    data-field="phone"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    value={state.phone}
+                    onChange={(e) => update("phone", e.target.value)}
+                    className={popInput(!!errors.phone)}
+                    placeholder="Ej. +51 999 999 999"
                   />
                 </PopupField>
 
@@ -367,7 +385,7 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
                     value={state.email}
                     onChange={(e) => update("email", e.target.value)}
                     className={popInput(!!errors.email)}
-                    placeholder="valeria@negocio.com"
+                    placeholder="correo@empresa.com"
                   />
                 </PopupField>
 
@@ -412,7 +430,7 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
                   className="group mt-1 inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-70"
                   style={{ backgroundColor: "#39FF88", color: "#04110A" }}
                 >
-                  {submitting ? "Preparando tu auditoría…" : "Agendar mi auditoría gratuita"}
+                  {submitting ? "Preparando tu demo…" : "Agendar demo"}
                   {!submitting && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />}
                 </button>
 

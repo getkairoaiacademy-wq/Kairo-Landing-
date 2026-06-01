@@ -20,11 +20,15 @@ function isValidPayload(data: Record<string, unknown>): { valid: boolean; error?
   const fullName = sanitize(data.fullName)
   if (!fullName || fullName.length < 2) return { valid: false, error: "invalid_name" }
 
-  const clinicName = sanitize(data.clinicName)
-  if (!clinicName) return { valid: false, error: "invalid_clinic_name" }
+  // Accept new companyName or legacy clinicName.
+  const companyName = sanitize(data.companyName) || sanitize(data.clinicName)
+  if (!companyName || companyName.length < 2) return { valid: false, error: "invalid_company_name" }
 
-  const contact = sanitize(data.contact)
-  if (!contact || contact.length < 5) return { valid: false, error: "invalid_contact" }
+  const email = sanitize(data.email) || (typeof data.contact === "string" && /\S+@\S+\.\S+/.test(data.contact) ? sanitize(data.contact) : "")
+  if (!email || !/\S+@\S+\.\S+/.test(email)) return { valid: false, error: "invalid_email" }
+
+  const phone = sanitize(data.phone) || (typeof data.contact === "string" && !/\S+@\S+\.\S+/.test(data.contact) ? sanitize(data.contact) : "")
+  if (!phone || phone.length < 6) return { valid: false, error: "invalid_phone" }
 
   if (data.clinicType && !VALID_CLINIC_TYPES.includes(data.clinicType as string)) {
     return { valid: false, error: "invalid_clinic_type" }
@@ -75,10 +79,20 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "consent_required" }, { status: 400 })
   }
 
+  // Derive canonical email + phone with legacy `contact` fallback.
+  const emailVal = sanitize(data.email) || (typeof data.contact === "string" && /\S+@\S+\.\S+/.test(data.contact) ? sanitize(data.contact) : "")
+  const phoneVal = sanitize(data.phone) || (typeof data.contact === "string" && !/\S+@\S+\.\S+/.test(data.contact) ? sanitize(data.contact) : "")
+  const companyVal = sanitize(data.companyName) || sanitize(data.clinicName)
+
   const record = {
     full_name: sanitize(data.fullName),
-    clinic_name: sanitize(data.clinicName),
-    contact: sanitize(data.contact),
+    company_name: companyVal,
+    // Legacy column kept populated for back-compat — same value as company_name.
+    clinic_name: companyVal,
+    email: emailVal,
+    phone: phoneVal,
+    // Legacy column "contact" still receives email (downstream tools may rely on it).
+    contact: emailVal || phoneVal,
     clinic_type: VALID_CLINIC_TYPES.includes(data.clinicType as string) ? data.clinicType : null,
     uses_whatsapp:
       data.usesWhatsapp === true || data.usesWhatsapp === "si"

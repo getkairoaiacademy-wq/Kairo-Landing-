@@ -22,11 +22,18 @@ export type ConversationVolume = "bajo" | "medio" | "alto"
 
 export interface AuditLeadInput {
   fullName: string
-  clinicName: string
-  contact: string
-  clinicType: ClinicType
-  usesWhatsapp: boolean
-  monthlyConversationVolume: ConversationVolume
+  /** Company / business name (replaces the old clinic-only label). */
+  companyName: string
+  /** Email — always required. */
+  email: string
+  /** WhatsApp / phone number — always required. */
+  phone: string
+  /** Optional legacy fields kept for back-compat with older DB columns. */
+  clinicName?: string
+  contact?: string
+  clinicType?: ClinicType
+  usesWhatsapp?: boolean
+  monthlyConversationVolume?: ConversationVolume
   mainProblem?: string
   ctaLocation: string
   // Legal consents — privacy + terms required, marketing optional.
@@ -109,28 +116,29 @@ export interface CalPrefill {
   guests?: string[]
 }
 
-export function buildCalPrefill(input?: Pick<AuditLeadInput, "fullName" | "contact" | "clinicName" | "mainProblem">): CalPrefill {
+export function buildCalPrefill(
+  input?: Pick<AuditLeadInput, "fullName" | "email" | "phone" | "companyName" | "mainProblem">,
+): CalPrefill {
   if (!input) return {}
   const prefill: CalPrefill = {}
   if (input.fullName) prefill.name = input.fullName
-  if (input.contact && /\S+@\S+\.\S+/.test(input.contact)) {
-    prefill.email = input.contact
-  }
+  if (input.email && /\S+@\S+\.\S+/.test(input.email)) prefill.email = input.email
   const notes: string[] = []
-  if (input.clinicName) notes.push(`Negocio: ${input.clinicName}`)
+  if (input.companyName) notes.push(`Empresa: ${input.companyName}`)
+  if (input.phone) notes.push(`WhatsApp: ${input.phone}`)
   if (input.mainProblem) notes.push(`Reto: ${input.mainProblem}`)
   if (notes.length > 0) prefill.notes = notes.join("\n")
   return prefill
 }
 
 // Full external Cal.com link (used only as fallback if embed fails).
-export function buildCalFallbackUrl(input?: Pick<AuditLeadInput, "fullName" | "contact">): string {
+export function buildCalFallbackUrl(input?: Pick<AuditLeadInput, "fullName" | "email">): string {
   const base = `https://cal.com/${CAL_LINK}`
   if (!input) return base
   const url = new URL(base)
   if (input.fullName) url.searchParams.set("name", input.fullName)
-  if (input.contact && /\S+@\S+\.\S+/.test(input.contact)) {
-    url.searchParams.set("email", input.contact)
+  if (input.email && /\S+@\S+\.\S+/.test(input.email)) {
+    url.searchParams.set("email", input.email)
   }
   return url.toString()
 }
