@@ -4,7 +4,8 @@ import Link from "next/link"
 import Image from "next/image"
 import { Instagram, Linkedin, Mail } from "lucide-react"
 import { useTheme } from "@/components/providers/theme-provider"
-import { AUDIT_CTA_URL, CTA_PRIMARY_SHORT, trackEvent } from "@/lib/constants"
+import { CTA_PRIMARY_SHORT } from "@/lib/constants"
+import { useAuditModal } from "@/components/audit/audit-modal-context"
 
 const footerLinks = {
   producto: [
@@ -19,13 +20,14 @@ const footerLinks = {
     { label: "Soporte", href: "#" },
   ],
   legal: [
-    { label: "Privacidad", href: "#" },
-    { label: "Términos", href: "#" },
+    { label: "Privacidad", href: "/politica-de-privacidad" },
+    { label: "Términos", href: "/terminos-y-condiciones" },
   ],
 }
 
 export function FooterSection() {
   const { resolvedTheme } = useTheme()
+  const { open } = useAuditModal()
 
   return (
     <footer className="px-6 py-16 border-t border-border">
@@ -119,15 +121,13 @@ export function FooterSection() {
             <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
               Diagnóstico gratuito de ingresos ocultos. Sin compromiso.
             </p>
-            <Link
-              href={AUDIT_CTA_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackEvent("landing_cta_audit_click", { location: "footer" })}
+            <button
+              type="button"
+              onClick={() => open("footer")}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity glow-green-sm"
             >
               {CTA_PRIMARY_SHORT}
-            </Link>
+            </button>
           </div>
         </div>
 

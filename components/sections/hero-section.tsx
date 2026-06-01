@@ -6,7 +6,7 @@ import { ArrowRight, Star } from "lucide-react"
 import { CTA_PRIMARY, trackEvent } from "@/lib/constants"
 import { useAuditModal } from "@/components/audit/audit-modal-context"
 import { MagneticButton } from "@/components/effects/magnetic-button"
-import { HeroProductFilm } from "@/components/sections/hero-product-film"
+import { LandingElevatorMotion } from "@/components/landing/landing-elevator-motion"
 
 const easeOut = [0.16, 1, 0.3, 1] as const
 
@@ -28,7 +28,7 @@ export function HeroSection() {
         >
           <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
           <span className="text-[11px] tracking-wide uppercase text-muted-foreground font-medium">
-            Para negocios que venden por WhatsApp
+            Para clínicas que venden por WhatsApp
           </span>
         </motion.div>
 
@@ -38,7 +38,7 @@ export function HeroSection() {
           transition={{ duration: 0.6, ease: easeOut, delay: 0.05 }}
           className="font-heading not-italic text-[2.6rem] leading-[1.06] sm:text-6xl sm:leading-[1.04] lg:text-[4.25rem] lg:leading-[1.02] font-extrabold tracking-[-0.03em] text-foreground text-balance"
         >
-          Encuentra <span className="text-gradient-green">ingresos ocultos</span> en tu base de clientes
+          Tu clínica ya tiene pacientes <span className="text-gradient-green">listos para volver</span>. KAIRO los encuentra.
         </motion.h1>
 
         <motion.p
@@ -47,8 +47,9 @@ export function HeroSection() {
           transition={{ duration: 0.55, ease: easeOut, delay: 0.15 }}
           className="mt-6 text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
         >
-          KAIRO analiza tus contactos, conversaciones y cotizaciones para detectar oportunidades,
-          recomendar campañas y preparar mensajes listos para revisar.
+          IA + WhatsApp para detectar consultas perdidas, cotizaciones pendientes y pacientes antiguos
+          dentro de tu propia base. KAIRO crea una Base Maestra, prioriza oportunidades y sugiere
+          campañas para recuperar ingresos.
         </motion.p>
 
         <motion.div
@@ -76,7 +77,7 @@ export function HeroSection() {
           transition={{ duration: 0.5, delay: 0.35 }}
           className="mt-5 text-xs text-muted-foreground"
         >
-          Sin mensajes automáticos sin aprobación. Tú decides qué se envía.
+          No reemplaza a tu equipo. Le muestra a quién contactar, por qué y con qué mensaje.
         </motion.p>
 
         <motion.div
@@ -102,7 +103,7 @@ export function HeroSection() {
         transition={{ duration: 0.8, ease: easeOut, delay: 0.3 }}
         className="relative z-10 mt-16 lg:mt-20 max-w-4xl mx-auto"
       >
-        <HeroProductFilm />
+        <LandingElevatorMotion />
       </motion.div>
     </section>
   )

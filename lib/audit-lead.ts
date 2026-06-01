@@ -1,8 +1,7 @@
 // Audit lead capture — saves a lead to the API (with localStorage fallback)
-// and builds the Calendly redirect URL with optional prefill.
-// Designed so the user is NEVER blocked by a save failure.
+// and builds Cal.com prefill data. Designed so the user is NEVER blocked by a save failure.
 
-import { CALENDLY_AUDIT_URL } from "./constants"
+import { CAL_LINK } from "./constants"
 import { getLandingSignals } from "./tracking"
 
 // Tipo de negocio. Conservamos el nombre `ClinicType` por compatibilidad con el
@@ -86,7 +85,7 @@ export async function saveAuditLead(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(record),
-      // Short timeout via AbortSignal so a slow endpoint never blocks Calendly.
+      // Short timeout via AbortSignal so a slow endpoint never blocks scheduling.
       signal: AbortSignal.timeout(4000),
     })
     if (!res.ok) {
@@ -98,11 +97,34 @@ export async function saveAuditLead(
   }
 }
 
-export function buildCalendlyUrl(input?: Pick<AuditLeadInput, "fullName" | "contact">): string {
-  if (!input) return CALENDLY_AUDIT_URL
-  const url = new URL(CALENDLY_AUDIT_URL)
+// Cal.com prefill helper. Returns query params to pass via the inline embed config.
+export interface CalPrefill {
+  name?: string
+  email?: string
+  notes?: string
+  guests?: string[]
+}
+
+export function buildCalPrefill(input?: Pick<AuditLeadInput, "fullName" | "contact" | "clinicName" | "mainProblem">): CalPrefill {
+  if (!input) return {}
+  const prefill: CalPrefill = {}
+  if (input.fullName) prefill.name = input.fullName
+  if (input.contact && /\S+@\S+\.\S+/.test(input.contact)) {
+    prefill.email = input.contact
+  }
+  const notes: string[] = []
+  if (input.clinicName) notes.push(`Negocio: ${input.clinicName}`)
+  if (input.mainProblem) notes.push(`Reto: ${input.mainProblem}`)
+  if (notes.length > 0) prefill.notes = notes.join("\n")
+  return prefill
+}
+
+// Full external Cal.com link (used only as fallback if embed fails).
+export function buildCalFallbackUrl(input?: Pick<AuditLeadInput, "fullName" | "contact">): string {
+  const base = `https://cal.com/${CAL_LINK}`
+  if (!input) return base
+  const url = new URL(base)
   if (input.fullName) url.searchParams.set("name", input.fullName)
-  // Calendly's email prefill only works if contact looks like an email.
   if (input.contact && /\S+@\S+\.\S+/.test(input.contact)) {
     url.searchParams.set("email", input.contact)
   }

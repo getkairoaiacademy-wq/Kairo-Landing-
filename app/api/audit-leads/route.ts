@@ -75,7 +75,12 @@ export async function POST(req: Request) {
     clinic_name: sanitize(data.clinicName),
     contact: sanitize(data.contact),
     clinic_type: VALID_CLINIC_TYPES.includes(data.clinicType as string) ? data.clinicType : null,
-    uses_whatsapp: data.usesWhatsapp === "si" ? true : data.usesWhatsapp === "no" ? false : null,
+    uses_whatsapp:
+      data.usesWhatsapp === true || data.usesWhatsapp === "si"
+        ? true
+        : data.usesWhatsapp === false || data.usesWhatsapp === "no"
+          ? false
+          : null,
     monthly_volume: VALID_VOLUMES.includes(data.monthlyConversationVolume as string) ? data.monthlyConversationVolume : null,
     main_problem: sanitize(data.mainProblem),
     source_page: sanitize(data.sourcePage),

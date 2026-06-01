@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { ArrowRight, Sparkles, TrendingUp, X } from "lucide-react"
-import { buildCalendlyUrl, saveAuditLead, type AuditLeadInput } from "@/lib/audit-lead"
+import { buildCalFallbackUrl, buildCalPrefill, saveAuditLead, type AuditLeadInput, type CalPrefill } from "@/lib/audit-lead"
 import { trackEvent } from "@/lib/tracking"
+import { CalEmbed } from "./cal-embed"
 
 interface Props {
   isOpen: boolean
@@ -17,9 +18,10 @@ const K_LAST_SHOWN = "kairo_audit_popup_last_shown"
 const K_SUBMITTED = "kairo_audit_popup_submitted"
 const K_DISMISSED = "kairo_audit_popup_dismissed_at"
 
-const FIVE_MIN = 5 * 60 * 1000
-const FIRST_DELAY_DESKTOP = 3500
-const FIRST_DELAY_MOBILE = 5000
+const SESSION_TIMEOUT = 30 * 60 * 1000
+// Pop-up appears AFTER 40 seconds on page. Never on entry.
+const FIRST_DELAY_DESKTOP = 40_000
+const FIRST_DELAY_MOBILE = 40_000
 
 const memory: Record<string, string> = {}
 function storeGet(key: string): string | null {
@@ -63,41 +65,42 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
   const [submitting, setSubmitting] = useState(false)
   const [saveFailed, setSaveFailed] = useState(false)
 
+  const [step, setStep] = useState<"form" | "calendar">("form")
+  const [calPrefill, setCalPrefill] = useState<CalPrefill>({})
+  const [calFallback, setCalFallback] = useState("")
+
   const dialogRef = useRef<HTMLDivElement>(null)
   const firstFieldRef = useRef<HTMLInputElement>(null)
   const lastActive = useRef<HTMLElement | null>(null)
 
   const visible = isOpen || autoOpen
-  const location = isOpen ? ctaLocation : "auto_popup"
+  const location = isOpen ? ctaLocation : "auto_popup_40s"
 
-  // ---- Auto-trigger scheduler ----
+  // ---- Auto-trigger scheduler: 40s after mount, ONCE per session ----
   useEffect(() => {
     if (typeof window === "undefined") return
+    // Already submitted: never auto-open.
     if (storeGet(K_SUBMITTED) === "1") return
+    // Already dismissed this session: never re-open.
+    if (storeGet(K_DISMISSED)) return
+    // Already shown this session: never re-open.
+    if (storeGet(K_LAST_SHOWN)) return
+    // Skip on legal pages.
+    const path = window.location.pathname
+    if (path.startsWith("/politica-de-privacidad") || path.startsWith("/terminos-y-condiciones")) return
 
     const isMobile = window.matchMedia("(max-width: 640px)").matches
-    let timer: number | undefined
+    const delay = isMobile ? FIRST_DELAY_MOBILE : FIRST_DELAY_DESKTOP
 
     const tryShow = () => {
       if (storeGet(K_SUBMITTED) === "1") return
-      // never if manually open already, or typing in another form
+      if (storeGet(K_DISMISSED)) return
       if (isOpen || isTypingElsewhere()) return
-      const dismissedAt = Number(storeGet(K_DISMISSED) || 0)
-      if (dismissedAt && Date.now() - dismissedAt < FIVE_MIN) return
-      const lastShown = Number(storeGet(K_LAST_SHOWN) || 0)
-      if (lastShown && Date.now() - lastShown < FIVE_MIN) return
       setAutoOpen(true)
     }
 
-    const lastShown = Number(storeGet(K_LAST_SHOWN) || 0)
-    const firstDelay = lastShown ? FIVE_MIN : isMobile ? FIRST_DELAY_MOBILE : FIRST_DELAY_DESKTOP
-    timer = window.setTimeout(tryShow, firstDelay)
-    const interval = window.setInterval(tryShow, FIVE_MIN)
-
-    return () => {
-      if (timer) window.clearTimeout(timer)
-      window.clearInterval(interval)
-    }
+    const timer = window.setTimeout(tryShow, delay)
+    return () => window.clearTimeout(timer)
   }, [isOpen])
 
   // ---- On open: record shown, focus, lock scroll ----
@@ -186,19 +189,16 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
       monthlyConversationVolume: "medio",
       ctaLocation: location,
     }
-    const url = buildCalendlyUrl({ fullName: input.fullName, contact: input.contact })
 
     const result = await saveAuditLead(input)
     storeSet(K_SUBMITTED, "1")
     trackEvent("audit_popup_submitted", { location, saved: result.ok })
 
-    // Redirect to Calendly (prefilled). Same tab = guaranteed (no popup blocker).
-    try {
-      window.location.assign(url)
-    } catch {
-      setSubmitting(false)
-      setSaveFailed(true)
-    }
+    setCalPrefill(buildCalPrefill(input))
+    setCalFallback(buildCalFallbackUrl(input))
+    setSubmitting(false)
+    setStep("calendar")
+    if (!result.ok) setSaveFailed(true)
   }
 
   const titleId = "audit-popup-title"
@@ -238,7 +238,7 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: reduce ? 0 : 16, opacity: 0, scale: reduce ? 1 : 0.985 }}
             transition={{ duration: reduce ? 0 : 0.42, ease: easeOut }}
-            className="relative grid w-full max-w-5xl grid-cols-1 overflow-hidden rounded-3xl border border-white/10 lg:grid-cols-[1.05fr_1fr] max-h-[94vh]"
+            className={`relative grid w-full ${step === "calendar" ? "max-w-4xl grid-cols-1" : "max-w-5xl grid-cols-1 lg:grid-cols-[1.05fr_1fr]"} overflow-hidden rounded-3xl border border-white/10 max-h-[94vh]`}
             style={{ background: "linear-gradient(160deg, #0A1310 0%, #060B09 100%)" }}
           >
             <button
@@ -250,7 +250,8 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
               <X className="h-4 w-4" />
             </button>
 
-            {/* LEFT — product visual */}
+            {/* LEFT — product visual (hidden in calendar step) */}
+            {step === "form" && (
             <div className="relative hidden lg:flex flex-col justify-center gap-4 p-9 border-r border-white/[0.06] overflow-hidden">
               <div
                 aria-hidden
@@ -283,9 +284,12 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
                 </div>
               </FloatingCard>
             </div>
+            )}
 
-            {/* RIGHT — logo + form */}
+            {/* RIGHT — logo + form OR calendar */}
             <div className="relative flex flex-col justify-center p-7 sm:p-9 overflow-y-auto">
+              {step === "form" && (
+              <>
               <div className="inline-flex items-center gap-2 self-start rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
                 <Sparkles className="h-3 w-3 text-[#39FF88]" />
                 <span className="text-[10px] uppercase tracking-[0.18em] text-white/60">Auditoría gratuita</span>
@@ -295,14 +299,18 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
                 id={titleId}
                 className="font-heading not-italic mt-4 text-2xl sm:text-[1.9rem] font-extrabold leading-[1.08] tracking-tight text-white"
               >
-                Descubre cuánto dinero hay <span style={{ color: "#39FF88" }}>dormido</span> en tu WhatsApp
+                ¿Quieres ver cuánto dinero podría estar <span style={{ color: "#39FF88" }}>dormido</span> en tu clínica?
               </h2>
               <p id={descId} className="mt-2.5 text-sm leading-relaxed text-white/55">
-                Te mostramos en una llamada si tu base tiene cotizaciones, consultas o clientes listos
-                para volver. Sin compromiso.
+                KAIRO analiza contactos, conversaciones y cotizaciones pendientes para detectar oportunidades de recuperación que tu equipo puede accionar por WhatsApp.
               </p>
 
               <form onSubmit={submit} noValidate className="mt-6 space-y-3.5">
+                {/* Honeypot */}
+                <div aria-hidden="true" style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, overflow: "hidden" }}>
+                  <label htmlFor="pop-website">Website</label>
+                  <input id="pop-website" name="_website" type="text" tabIndex={-1} autoComplete="off" />
+                </div>
                 <PopupField label="Nombre del negocio" error={errors.clinicName} htmlFor="pop-clinic">
                   <input
                     ref={firstFieldRef}
@@ -354,14 +362,13 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
                   {!submitting && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />}
                 </button>
 
-                {saveFailed && (
-                  <a
-                    href={buildCalendlyUrl({ fullName: state.fullName.trim(), contact: state.email.trim() })}
-                    className="block text-center text-xs text-[#39FF88] underline underline-offset-2"
-                  >
-                    Abrir Calendly
-                  </a>
-                )}
+                <p className="text-center text-[10px] leading-relaxed text-white/35">
+                  Sin spam. Sin automatizaciones agresivas. Solo una revisión clara de oportunidades comerciales.
+                  Al continuar aceptas nuestra{" "}
+                  <a href="/politica-de-privacidad" className="underline hover:text-white/60" target="_blank" rel="noopener noreferrer">Política de Privacidad</a>{" "}
+                  y{" "}
+                  <a href="/terminos-y-condiciones" className="underline hover:text-white/60" target="_blank" rel="noopener noreferrer">Términos</a>.
+                </p>
 
                 <button
                   type="button"
@@ -371,6 +378,27 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
                   Ahora no
                 </button>
               </form>
+              </>
+              )}
+
+              {step === "calendar" && (
+                <div className="space-y-4">
+                  <div>
+                    <h2 className="font-heading text-xl sm:text-2xl font-extrabold tracking-tight text-white">
+                      Listo. Elige tu horario.
+                    </h2>
+                    <p className="mt-1.5 text-xs leading-relaxed text-white/55">
+                      Agenda tu demo directamente acá. Si el calendario no carga, te contactamos.
+                    </p>
+                  </div>
+                  <CalEmbed prefill={calPrefill} ctaLocation={location} fallbackUrl={calFallback} />
+                  {saveFailed && (
+                    <p className="text-center text-[10px] text-white/35">
+                      Guardamos tu intento localmente. Si no podemos contactarte, escríbenos a soporte.
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </motion.div>
         </motion.div>

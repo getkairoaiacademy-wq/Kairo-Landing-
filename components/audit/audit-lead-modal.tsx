@@ -2,15 +2,18 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { ArrowRight, CheckCircle2, ExternalLink, X } from "lucide-react"
+import { ArrowRight, CheckCircle2, X } from "lucide-react"
 import {
-  buildCalendlyUrl,
+  buildCalPrefill,
+  buildCalFallbackUrl,
   saveAuditLead,
   type AuditLeadInput,
+  type CalPrefill,
   type ClinicType,
   type ConversationVolume,
 } from "@/lib/audit-lead"
 import { trackEvent } from "@/lib/tracking"
+import { CalEmbed } from "./cal-embed"
 
 interface Props {
   isOpen: boolean
@@ -82,7 +85,8 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
   const [errors, setErrors] = useState<FieldError>({})
   const [submitting, setSubmitting] = useState(false)
   const [step, setStep] = useState<"form" | "success">("form")
-  const [calendlyUrl, setCalendlyUrl] = useState<string>("")
+  const [calPrefill, setCalPrefill] = useState<CalPrefill>({})
+  const [calFallback, setCalFallback] = useState<string>("")
 
   const dialogRef = useRef<HTMLDivElement>(null)
   const firstFieldRef = useRef<HTMLInputElement>(null)
@@ -172,27 +176,23 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
     if (hpField?.value) {
       setSubmitting(false)
       setStep("success")
-      setCalendlyUrl(buildCalendlyUrl(input))
+      setCalPrefill(buildCalPrefill(input))
+      setCalFallback(buildCalFallbackUrl(input))
       return
     }
 
-    const url = buildCalendlyUrl(input)
-    setCalendlyUrl(url)
+    setCalPrefill(buildCalPrefill(input))
+    setCalFallback(buildCalFallbackUrl(input))
 
     const result = await saveAuditLead(input)
     if (!result.ok && process.env.NODE_ENV !== "production") {
-      // Dev-only: never surfaced to user; never blocks Calendly.
+      // Dev-only: never surfaced to user; never blocks scheduling.
       trackEvent("audit_lead_save_failed", { reason: result.error, ctaLocation })
     } else if (result.ok) {
       trackEvent("audit_lead_submitted", { ctaLocation })
     }
     setSubmitting(false)
     setStep("success")
-  }
-
-  const goToCalendly = () => {
-    trackEvent("audit_calendly_opened", { ctaLocation })
-    window.open(calendlyUrl, "_blank", "noopener,noreferrer")
   }
 
   const titleId = "audit-modal-title"
@@ -206,8 +206,8 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
             desc: "Completa estos datos para que la llamada sea más útil y podamos mostrarte oportunidades cercanas al tipo de negocio que tienes.",
           }
         : {
-            title: "Listo. Ahora elige tu horario.",
-            desc: "Con estos datos podremos preparar mejor tu auditoría de ingresos ocultos.",
+            title: "Listo. Elige tu horario.",
+            desc: "Agenda tu demo directamente acá. Sin salir de la página.",
           },
     [step],
   )
@@ -241,7 +241,7 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 20, opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
-            className="relative w-full sm:max-w-lg max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl glass-card border border-border/60 glow-green-sm p-6 sm:p-7"
+            className={`relative w-full ${step === "success" ? "sm:max-w-3xl" : "sm:max-w-lg"} max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl glass-card border border-border/60 glow-green-sm p-6 sm:p-7`}
           >
             <button
               type="button"
@@ -404,7 +404,7 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
                   disabled={submitting}
                   className="group mt-2 inline-flex w-full items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:opacity-95 transition-all disabled:opacity-70 disabled:cursor-not-allowed glow-green-sm"
                 >
-                  {submitting ? "Preparando…" : "Continuar a Calendly"}
+                  {submitting ? "Preparando…" : "Continuar a calendario"}
                   {!submitting && (
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                   )}
@@ -416,28 +416,15 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
                 </p>
               </form>
             ) : (
-              <div className="space-y-5">
-                <div className="flex items-start gap-3 glass-card-green rounded-xl p-4">
-                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">
-                      Datos guardados para tu auditoría.
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                      Ahora elige un horario en Calendly y te enviaremos confirmación al contacto que
-                      dejaste.
-                    </p>
-                  </div>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3 glass-card-green rounded-xl p-3">
+                  <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                  <p className="text-xs text-foreground/90 leading-relaxed">
+                    Datos guardados. Elige un horario para tu demo directamente debajo.
+                  </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={goToCalendly}
-                  className="group inline-flex w-full items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:opacity-95 transition-all glow-green-sm"
-                >
-                  Abrir Calendly
-                  <ExternalLink className="w-4 h-4" />
-                </button>
+                <CalEmbed prefill={calPrefill} ctaLocation={ctaLocation} fallbackUrl={calFallback} />
 
                 <button
                   type="button"
