@@ -1,12 +1,12 @@
 "use client"
 
 // Cal.com inline embed wrapper — premium dark frame.
-// No Calendly. No external redirect by default.
-// Prefills name/email/notes from the form step.
+// Inline only. No external redirect. No "Abrir calendario" CTA.
+// Prefills name/email/notes/metadata from the form step.
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Cal, { getCalApi } from "@calcom/embed-react"
-import { AlertCircle, Calendar } from "lucide-react"
+import { AlertCircle } from "lucide-react"
 import { CAL_LINK, CAL_NAMESPACE } from "@/lib/constants"
 import { trackEvent } from "@/lib/tracking"
 import type { CalPrefill } from "@/lib/audit-lead"
@@ -14,13 +14,13 @@ import type { CalPrefill } from "@/lib/audit-lead"
 interface Props {
   prefill?: CalPrefill
   ctaLocation: string
-  /** Fallback url if embed fails to mount. */
+  /** Optional fallback url — intentionally NOT rendered as a CTA. Kept for prop compat. */
   fallbackUrl?: string
 }
 
-export function CalEmbed({ prefill, ctaLocation, fallbackUrl }: Props) {
+export function CalEmbed({ prefill, ctaLocation }: Props) {
   const [error, setError] = useState(false)
-  const [loaded, setLoaded] = useState(false)
+  const loadedRef = useRef(false)
 
   useEffect(() => {
     let mounted = true
@@ -45,28 +45,30 @@ export function CalEmbed({ prefill, ctaLocation, fallbackUrl }: Props) {
           layout: "month_view",
         })
         cal("on", {
+          action: "linkReady",
+          callback: () => {
+            loadedRef.current = true
+            if (mounted) trackEvent("audit_cal_opened", { ctaLocation })
+          },
+        })
+        cal("on", {
           action: "bookingSuccessful",
           callback: () => {
             trackEvent("audit_cal_booked", { ctaLocation })
           },
         })
-        if (mounted) {
-          setLoaded(true)
-          trackEvent("audit_cal_opened", { ctaLocation })
-        }
-      } catch (err) {
+      } catch {
         if (mounted) setError(true)
       }
     })()
-    // Hard fallback if embed never mounts within 8s.
+    // Hard error only if embed never signals readiness in 12s.
     const timeout = window.setTimeout(() => {
-      if (mounted && !loaded) setError(true)
-    }, 8000)
+      if (mounted && !loadedRef.current) setError(true)
+    }, 12000)
     return () => {
       mounted = false
       window.clearTimeout(timeout)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ctaLocation])
 
   if (error) {
@@ -77,42 +79,35 @@ export function CalEmbed({ prefill, ctaLocation, fallbackUrl }: Props) {
       >
         <AlertCircle className="h-6 w-6 text-[#39FF88]" />
         <p className="text-sm font-medium text-white">
-          Ya recibimos tus datos.
+          El calendario no pudo cargar.
         </p>
         <p className="text-xs leading-relaxed text-white/60">
-          Si el calendario no carga, te contactaremos directamente para coordinar la demo.
+          Ya tenemos tus datos y te contactaremos directamente para coordinar la demo.
         </p>
-        {fallbackUrl && (
-          <a
-            href={fallbackUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-full bg-[#39FF88] px-4 py-2 text-xs font-semibold text-[#04110A] hover:opacity-95 transition"
-          >
-            <Calendar className="h-3.5 w-3.5" />
-            Abrir calendario
-          </a>
-        )}
       </div>
     )
   }
 
+  // Build config: only include fields if defined to avoid empty prefill.
+  const config: Record<string, unknown> = {
+    layout: "month_view",
+    theme: "dark",
+  }
+  if (prefill?.name) config.name = prefill.name
+  if (prefill?.email) config.email = prefill.email
+  if (prefill?.notes) config.notes = prefill.notes
+  if (prefill?.metadata) config.metadata = prefill.metadata
+
   return (
     <div
       className="overflow-hidden rounded-2xl border border-white/10 bg-[#060B09]"
-      style={{ minHeight: 540 }}
+      style={{ minHeight: 720 }}
     >
       <Cal
         namespace={CAL_NAMESPACE}
         calLink={CAL_LINK}
-        config={{
-          layout: "month_view",
-          theme: "dark",
-          ...(prefill?.name ? { name: prefill.name } : {}),
-          ...(prefill?.email ? { email: prefill.email } : {}),
-          ...(prefill?.notes ? { notes: prefill.notes } : {}),
-        }}
-        style={{ width: "100%", height: "100%", minHeight: 540 }}
+        config={config as never}
+        style={{ width: "100%", height: "720px", overflow: "scroll" }}
       />
     </div>
   )

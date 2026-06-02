@@ -449,10 +449,10 @@ export function AuditPopupFullscreen({ isOpen, onClose, ctaLocation }: Props) {
                 <div className="space-y-4">
                   <div>
                     <h2 className="font-heading text-xl sm:text-2xl font-extrabold tracking-tight text-white">
-                      Listo. Elige tu horario.
+                      Elige tu horario
                     </h2>
                     <p className="mt-1.5 text-xs leading-relaxed text-white/55">
-                      Agenda tu demo directamente acá. Si el calendario no carga, te contactamos.
+                      Ya recibimos tus datos. Agenda tu demo de KAIRO sin salir de esta página.
                     </p>
                   </div>
                   <CalEmbed prefill={calPrefill} ctaLocation={location} fallbackUrl={calFallback} />

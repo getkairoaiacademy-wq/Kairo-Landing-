@@ -177,8 +177,8 @@ export function AuditLeadModal({ isOpen, onClose, ctaLocation }: Props) {
             desc: "Te pedimos estos datos para coordinar tu demo. No hacemos spam.",
           }
         : {
-            title: "Listo. Elige tu horario.",
-            desc: "Agenda tu demo directamente acá. Sin salir de la página.",
+            title: "Elige tu horario",
+            desc: "Ya recibimos tus datos. Agenda tu demo de KAIRO sin salir de esta página.",
           },
     [step],
   )

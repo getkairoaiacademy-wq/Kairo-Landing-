@@ -108,12 +108,13 @@ export async function saveAuditLead(
   }
 }
 
-// Cal.com prefill helper. Returns query params to pass via the inline embed config.
+// Cal.com prefill helper. Returns config to pass via the inline embed.
 export interface CalPrefill {
   name?: string
   email?: string
   notes?: string
   guests?: string[]
+  metadata?: Record<string, string>
 }
 
 export function buildCalPrefill(
@@ -128,6 +129,10 @@ export function buildCalPrefill(
   if (input.phone) notes.push(`WhatsApp: ${input.phone}`)
   if (input.mainProblem) notes.push(`Reto: ${input.mainProblem}`)
   if (notes.length > 0) prefill.notes = notes.join("\n")
+  const metadata: Record<string, string> = { source: "landing" }
+  if (input.companyName) metadata.company_name = input.companyName
+  if (input.phone) metadata.phone = input.phone
+  prefill.metadata = metadata
   return prefill
 }
 
