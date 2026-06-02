@@ -7,7 +7,7 @@
 import { useEffect, useRef, useState } from "react"
 import Cal, { getCalApi } from "@calcom/embed-react"
 import { AlertCircle } from "lucide-react"
-import { CAL_LINK, CAL_NAMESPACE } from "@/lib/constants"
+import { CAL_LINK, CAL_NAMESPACE, sanitizeCalLink } from "@/lib/constants"
 import { trackEvent } from "@/lib/tracking"
 import type { CalPrefill } from "@/lib/audit-lead"
 
@@ -19,10 +19,17 @@ interface Props {
 }
 
 export function CalEmbed({ prefill, ctaLocation }: Props) {
-  const [error, setError] = useState(false)
+  const safeCalLink = sanitizeCalLink(CAL_LINK)
+  const [error, setError] = useState(!safeCalLink)
   const loadedRef = useRef(false)
 
   useEffect(() => {
+    if (!safeCalLink) {
+      if (process.env.NODE_ENV !== "production") {
+        console.error("[CalEmbed] Invalid CAL_LINK — expected user/event slug, got:", CAL_LINK)
+      }
+      return
+    }
     let mounted = true
     ;(async () => {
       try {
@@ -69,9 +76,9 @@ export function CalEmbed({ prefill, ctaLocation }: Props) {
       mounted = false
       window.clearTimeout(timeout)
     }
-  }, [ctaLocation])
+  }, [ctaLocation, safeCalLink])
 
-  if (error) {
+  if (error || !safeCalLink) {
     return (
       <div
         role="alert"
@@ -79,10 +86,10 @@ export function CalEmbed({ prefill, ctaLocation }: Props) {
       >
         <AlertCircle className="h-6 w-6 text-[#39FF88]" />
         <p className="text-sm font-medium text-white">
-          El calendario no pudo cargar.
+          No pudimos cargar el calendario.
         </p>
         <p className="text-xs leading-relaxed text-white/60">
-          Ya tenemos tus datos y te contactaremos directamente para coordinar la demo.
+          Ya tenemos tus datos y te contactaremos directamente para coordinar tu demo.
         </p>
       </div>
     )
@@ -105,7 +112,7 @@ export function CalEmbed({ prefill, ctaLocation }: Props) {
     >
       <Cal
         namespace={CAL_NAMESPACE}
-        calLink={CAL_LINK}
+        calLink={safeCalLink}
         config={config as never}
         style={{ width: "100%", height: "720px", overflow: "scroll" }}
       />
